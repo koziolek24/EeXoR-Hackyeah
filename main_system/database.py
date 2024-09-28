@@ -59,3 +59,41 @@ def add_submission(name: str, handle: str):
     except Exception as e:
         print(e)
         return None
+
+def get_problem_by_user(handle: str):
+    try:
+        user = CFUser.objects.get(handle=handle)
+        return CFSubmission.objects.filter(user=user, verdict=True).all()
+    except Exception as e:
+        print(e)
+
+def get_problem_with_rating_and_tag(min_rating: int, max_rating, tag: str):
+    try:
+        return CFProblem.objects.filter(rating__range=(min_rating, max_rating), cfproblemandtag__tag=tag).all()
+    except Exception as e:
+        print(e)
+
+def get_problem_by_tag(handle: str, tag: str):
+    # every task with tag not started by user
+    problems_w_tag = CFProblem.objects.filter(cfproblemandtag__tag=tag)
+    user = CFUser.objects.get(handle=handle)
+    solved_problems = CFSubmission.objects.filter(user=user, verdict=True).values_list('problem', flat=True)
+    unsolved_problems = problems_w_tag.exclude(id__in=solved_problems)
+    return unsolved_problems
+
+def get_problem_by_rating(handle: str, min_rating: int, max_rating: int):
+    # every task between rating not started
+    problems_w_rating = CFProblem.objects.filter(rating__range=(min_rating, max_rating))
+    user = CFUser.objects.get(handle=handle)
+    solved_problems = CFSubmission.objects.filter(user=user, verdict=True).values_list('problem', flat=True)
+    unsolved_problems = problems_w_rating.exclude(id__in=solved_problems)
+    return unsolved_problems
+
+def get_tags_to_a_problem(name: str):
+    try:
+        problem = CFProblem.objects.get(name=name)
+        tags = CFProblemAndTag.objects.filter(problem=problem).all()
+        return tags
+    except Exception as e:
+        print(e)
+    pass
