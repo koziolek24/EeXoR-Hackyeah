@@ -140,6 +140,7 @@ GitHub.sublime-settings
 
 .idea
 
+venv2/
 # Logs
 logs
 npm-debug.log*
