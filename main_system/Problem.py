@@ -151,3 +151,12 @@ def get_random_problem_with_tag(problems: list[Problem], tag: str) -> Problem:
     
     random_number = randint(0, ammount_of_problems-1)
     return filtered_problems[random_number]
+
+def get_problem_by_tag(username: int, tags: list[str]):
+    pass
+
+def get_recommended_problem(username: str):
+    pass
+
+def get_random_problem(username: str):
+    pass
