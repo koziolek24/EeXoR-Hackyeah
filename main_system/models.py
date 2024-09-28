@@ -29,7 +29,7 @@ class CFProblemAndTag(models.Model):
 
 
 class CFSubmission(models.Model):
-    submit_time = models.DateTimeField(default=timezone.now())
+    submit_time = models.DateTimeField()
     problem = models.ForeignKey(CFProblem, on_delete=models.CASCADE)
     user = models.ForeignKey(CFUser, on_delete=models.CASCADE)
     verdict  = models.BooleanField(default=False)
