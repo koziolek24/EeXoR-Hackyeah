@@ -30,7 +30,7 @@ class CFUserAndContestSerializer(serializers.ModelSerializer):
 class CFProblemSerializer(serializers.ModelSerializer):
     class Meta:
         model = CFProblem
-        fields = ['id', 'contest', 'problemset_name', 'index', 'name',
+        fields = ['id', 'problemset_name', 'index', 'name',
                   'points', 'rating']
 
 
@@ -43,7 +43,7 @@ class CFProblemAndTagSerializer(serializers.ModelSerializer):
 class CFSubmissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = CFSubmission
-        fields = ['id', 'cf_id', 'contest', 'creation_time', 'problem',
+        fields = ['id', 'cf_id', 'creation_time', 'problem',
                   'user', 'verdict']
 
 
