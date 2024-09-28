@@ -1,7 +1,9 @@
 from random import randint
 
 class Problem:
-    def __init__(self, _name, _link, _rating, _problem_id, _is_solved = False, _time_begin = 0, _time_end = 0, _tags = None):
+    def __init__(self, _name: str, _link: str, _rating: int, _problem_id: str,
+                 _is_solved = False, _time_begin = 0, _time_end = 0,
+                 _tags = None):
         self.name = _name
         self.link = _link
         self.rating = _rating
@@ -13,28 +15,28 @@ class Problem:
         if self.tags == None:
             self.tags = []
 
-    def get_name(self):
+    def get_name(self) -> str:
         return self.name
 
-    def get_link(self):
+    def get_link(self) -> str:
         return self.link
 
-    def get_rating(self):
+    def get_rating(self) -> int:
         return self.rating
     
-    def get_link(self):
+    def get_link(self) -> str:
         return self.link
 
-    def get_time(self):
+    def get_time(self) -> int:
         return self.time
     
-    def get_tags(self):
+    def get_tags(self) -> list[str]:
         return self.tags
     
-    def get_problem_id(self):
+    def get_problem_id(self) -> str:
         return self.problem_id
     
-    def stringify(self):
+    def stringify(self) -> str:
         output_string = ""
         output_string += str(self.get_name()) + " "
         output_string += str(self.get_problem_id()) + " "
@@ -42,13 +44,13 @@ class Problem:
         output_string += str(self.get_tags()) + " "
         return output_string
 
-def calculate_performence(problem):
+def calculate_performence(problem: list[Problem]) -> int:
     performence = problem.getRating() * 10
     performence //= problem.getTime()
     return performence
 
 # there for sure are more than 0 problems
-def evaluate_problems(problems):
+def evaluate_problems(problems: list[Problem]) -> int:
     performence = 0
     ammount_of_problems = len(problems)
 
@@ -58,7 +60,7 @@ def evaluate_problems(problems):
     performence //= ammount_of_problems
     return performence
 
-def get_tags_from_problems(problems):
+def get_tags_from_problems(problems: list[Problem]) -> list[str]:
     all_tags = []
 
     for problem in problems:
@@ -70,10 +72,10 @@ def get_tags_from_problems(problems):
 
     return all_tags
 
-def sort_problems_by_difficulty(problems):
+def sort_problems_by_difficulty(problems: list[Problem]) -> list[Problem]:
     return sorted(problems, key=lambda x : x.rating)
 
-def sort_problems_by_tags(problems):
+def sort_problems_by_tags(problems: list[Problem]) -> list[Problem]:
     all_tags = get_tags_from_problems(problems)
     sorted_problems = {}
 
@@ -90,7 +92,7 @@ def sort_problems_by_tags(problems):
     
     return sorted_problems
 
-def filter_problems_by_tag(problems, tag):
+def filter_problems_by_tag(problems: list[Problem], tag: str) -> list[Problem]:
     filtered_problems = []
 
     for problem in problems:
@@ -100,7 +102,7 @@ def filter_problems_by_tag(problems, tag):
     
     return filtered_problems
 
-def filter_problems_by_rating(problems, min_rating, max_rating):
+def filter_problems_by_rating(problems: list[Problem], min_rating: int, max_rating: int) -> list[Problem]:
     filtered_problems = []
 
     for problem in problems:
@@ -114,7 +116,7 @@ def filter_problems_by_rating(problems, min_rating, max_rating):
     return filtered_problems
 
 
-def get_random_problem_with_tag(problems, tag):
+def get_random_problem_with_tag(problems: list[Problem], tag: str) -> Problem:
     filtered_problems = filter_problems_by_tag(problems, tag)
 
     ammount_of_problems = len(filtered_problems)
