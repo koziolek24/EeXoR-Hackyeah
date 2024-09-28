@@ -1,7 +1,7 @@
 from .models import CFUser, CFSubmission, CFProblemAndTag, CFProblem
 
 
-def get_problems_by_user_and_tags(cf_user, tags):
+def get_problems_by_user_and_tags(cf_user, tags : list[str]):
     user_submissions = CFSubmission.objects.all().filter(user=cf_user)
     matching_problems = []
     for submission in user_submissions:
@@ -12,3 +12,13 @@ def get_problems_by_user_and_tags(cf_user, tags):
         if (len(common_tags) > 0):
             matching_problems.append(problem)
     return matching_problems
+
+def get_unused_tags(cf_user, all_tags):
+    unused_tags = []
+    for tag in all_tags:
+        problems = get_problems_by_user_and_tags(cf_user, [tag])
+        if len(problems) == 0:
+            unused_tags.append(tag)
+    
+    return unused_tags
+
