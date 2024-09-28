@@ -38,8 +38,8 @@ class CFProblem(models.Model):
     problemset_name = models.CharField(max_length=255)
     index = models.CharField(max_length=255) # np. A, B, C, D
     name = models.CharField(max_length=255)
-    points = models.FloatField()
-    rating = models.IntegerField()
+    points = models.FloatField(null=True, blank=True, default=None)
+    rating = models.IntegerField(null=True, blank=True, default=None)
 
 
 class CFProblemAndTag(models.Model):
