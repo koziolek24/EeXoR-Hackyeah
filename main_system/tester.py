@@ -9,7 +9,7 @@ hardcoded_problems = [
     Problem.Problem("f", "...", 1400, "1901f", _tags=[1,6])
 ]
 
-print(Problem.get_random_problem_with_tag(hardcoded_problems, 1).stringify())
-print([x.stringify() for x in Problem.filter_problems_by_rating(hardcoded_problems, 1400, 1700)])
-print([x.stringify() for x in hardcoded_problems])
+print
+print(hardcoded_problems)
 hardcoded_problems = Problem.sort_problems_by_tags(hardcoded_problems)
+print(hardcoded_problems)
