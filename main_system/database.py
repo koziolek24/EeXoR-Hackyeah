@@ -1,5 +1,6 @@
 from .models import CFUser, CFSubmission, CFProblemAndTag, CFProblem
 from django.utils import timezone
+from django.contrib.auth.models import User as AUser
 
 
 def get_problems_by_user_and_tags(cf_user, tags : list[str]) -> list[CFProblem]:
@@ -18,6 +19,11 @@ def add_cf_user(handle: str, rank: str, rating: int):
     try:
         new_user = CFUser.objects.create(handle=handle, rank=rank, rating=rating)
         new_user.save()
+
+        # tworzenie użytkownika autentykacji
+        auser = AUser.objects.create_user(handle, handle, handle)
+        auser.save()
+
         return new_user
     except Exception as e:
         print(e)
@@ -59,3 +65,10 @@ def add_submission(name: str, handle: str):
     except Exception as e:
         print(e)
         return None
+
+
+def user_exists(handle):
+    try:
+        return CFUser.objects.all().get(handle=handle) is not None
+    except CFUser.DoesNotExist:
+        return False
