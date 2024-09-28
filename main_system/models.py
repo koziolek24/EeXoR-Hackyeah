@@ -8,6 +8,11 @@ PARTICIPANT_TYPES = [
     ('OUT_OF_COMPETITION', 'OUT_OF_COMPETITION'),
 ]
 
+class CFUser(models.Model):
+    handle = models.CharField(max_length=255)
+    rank = models.CharField(max_length=255)
+    rating = models.IntegerField()
+
 VERDICTS = [
     ('FAILED', 'FAILED'),
     ('OK', 'OK'),
@@ -28,33 +33,8 @@ VERDICTS = [
     ('REJECTED', 'REJECTED'),
 ]
 
-class CFUser(models.Model):
-    handle = models.CharField(max_length=255)
-    rank = models.CharField(max_length=255)
-    rating = models.IntegerField()
-
-class CFContest(models.Model):
-    contest_id = models.IntegerField()
-    duration = models.IntegerField() # w sekundach
-    difficulty = models.IntegerField() # od 1 do 5 dziwne
-
-
-class CFRatingChange(models.Model):
-    contest = models.ForeignKey(CFContest, on_delete=models.CASCADE)
-    user = models.ForeignKey(CFUser, on_delete=models.CASCADE)
-    rank = models.IntegerField()
-    old_rating = models.IntegerField()
-    new_rating = models.IntegerField()
-
-
-class CFUserAndContest(models.Model): # oparte na Party i Member
-    user = CFUser(models.Model)
-    contest = CFContest(models.Model)
-    participant_type = models.CharField(max_length=255, choices=PARTICIPANT_TYPES)
-
-
 class CFProblem(models.Model):
-    contest = models.ForeignKey(CFContest, on_delete=models.CASCADE)
+    # contest = models.ForeignKey(CFContest, on_delete=models.CASCADE)
     problemset_name = models.CharField(max_length=255)
     index = models.CharField(max_length=255) # np. A, B, C, D
     name = models.CharField(max_length=255)
@@ -69,9 +49,31 @@ class CFProblemAndTag(models.Model):
 
 class CFSubmission(models.Model):
     cf_id = models.IntegerField()
-    contest = models.ForeignKey(CFContest, on_delete=models.CASCADE, null=True, 
-                                blank=True) 
+    # contest = models.ForeignKey(CFContest, on_delete=models.CASCADE, null=True,
+    #                             blank=True)
     creation_time = models.IntegerField() # jakiś unix-format XD
     problem = models.ForeignKey(CFProblem, on_delete=models.CASCADE)
     user = models.ForeignKey(CFUser, on_delete=models.CASCADE)
     verdict  = models.CharField(max_length=255, choices=VERDICTS, null=True, blank=True)
+
+
+#
+# class CFContest(models.Model):
+#     contest_id = models.IntegerField()
+#     duration = models.IntegerField() # w sekundach
+#     difficulty = models.IntegerField() # od 1 do 5 dziwne
+#
+#
+# class CFRatingChange(models.Model):
+#     contest = models.ForeignKey(CFContest, on_delete=models.CASCADE)
+#     user = models.ForeignKey(CFUser, on_delete=models.CASCADE)
+#     rank = models.IntegerField()
+#     old_rating = models.IntegerField()
+#     new_rating = models.IntegerField()
+#
+#
+# class CFUserAndContest(models.Model): # oparte na Party i Member
+#     user = CFUser(models.Model)
+#     contest = CFContest(models.Model)
+#     participant_type = models.CharField(max_length=255, choices=PARTICIPANT_TYPES)
+#
