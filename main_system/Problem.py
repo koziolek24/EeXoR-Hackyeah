@@ -1,19 +1,15 @@
 from random import randint
+from models import CFUser
 
 class Problem:
-    def __init__(self, _name: str, _link: str, _rating: int, _problem_id: str,
-                 _is_solved = False, _time_begin = 0, _time_end = 0,
-                 _tags = None):
-        self.name = _name
-        self.link = _link
-        self.rating = _rating
-        self.is_solved = _is_solved
-        self.time_begin = _time_begin
-        self.time_end = _time_end
-        self.problem_id = _problem_id
-        self.tags = _tags
-        if self.tags == None:
-            self.tags = []
+    def __init__(self, data):
+        self.name = data.name
+        self.link = data.link
+        self.rating = data.rating
+        self.is_solved = data.is_solved
+        self.time = data.time
+        self.problem_id = data.problem_id
+        self.tags = data.tags
 
     def get_name(self) -> str:
         return self.name
