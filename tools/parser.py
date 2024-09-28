@@ -1,19 +1,19 @@
 import os
-import sys
-
 import django
 
+# Ustawienie zmiennej środowiskowej na konfigurację Django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'EeXoR.settings')
 
+# Inicjalizacja Django
 django.setup()
 
+# Dopiero teraz możesz zaimportować modele lub inne elementy związane z Django
 from main_system.database import add_problem
 
+# Reszta Twojego kodu
 import requests
-def get_task_tag(tag: str):
-    url = "https://codeforces.com/api/problemset.problems?tags="
-    url += tag
-    url += "}"
+def get_task_tag(tag):
+    url = f'https://codeforces.com/api/problemset.problems?tags={tag}'
     response = requests.get(url).json()
     try:
         problems = response['result']['problems']
@@ -29,7 +29,8 @@ def get_task_tag(tag: str):
 
             add_problem(Id, index, name, points, rating, tags)
     except Exception as e:
-        return e
+        print(e)
+        return None
 
 tags = [
     "implementation",
