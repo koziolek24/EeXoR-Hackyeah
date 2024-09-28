@@ -50,8 +50,8 @@ def add_submission(name: str, handle: str):
         problem = CFProblem.objects.get(name=name)
         user = CFUser.objects.get(handle=handle)
         if not CFSubmission.objects.filter(user=user, problem=problem).exists():
-            print("chuj")
-            new_submission = CFSubmission.objects.create(problem=problem,user=user, verdict=False)
+            submit_time = timezone.now()
+            new_submission = CFSubmission.objects.create(problem=problem,user=user, submit_time=submit_time)
             new_submission.save()
             return new_submission
         else:

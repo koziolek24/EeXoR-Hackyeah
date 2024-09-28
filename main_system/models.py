@@ -33,7 +33,7 @@ class CFSubmission(models.Model):
     problem = models.ForeignKey(CFProblem, on_delete=models.CASCADE)
     user = models.ForeignKey(CFUser, on_delete=models.CASCADE)
     verdict  = models.BooleanField(default=False)
-    accept_time = models.DateTimeField(null=True, blank=True)
+    accept_time = models.DateTimeField(null=True, blank=True, default=None)
 
 
 
