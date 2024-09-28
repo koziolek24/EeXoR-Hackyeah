@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 PARTICIPANT_TYPES = [
     ('CONTESTANT', 'CONTESTANT'), 
@@ -12,26 +13,6 @@ class CFUser(models.Model):
     handle = models.CharField(max_length=255)
     rank = models.CharField(max_length=255)
     rating = models.IntegerField()
-
-VERDICTS = [
-    ('FAILED', 'FAILED'),
-    ('OK', 'OK'),
-    ('PARTIAL', 'PARTIAL'),
-    ('COMPILATION_ERROR,', 'COMPILATION_ERROR,'),
-    ('RUNTIME_ERROR', 'RUNTIME_ERROR'),
-    ('WRONG_ANSWER', 'WRONG_ANSWER'),
-    ('PRESENTATION_ERROR', 'PRESENTATION_ERROR'),
-    ('TIME_LIMIT_EXCEEDED', 'TIME_LIMIT_EXCEEDED'),
-    ('MEMORY_LIMIT_EXCEEDED', 'MEMORY_LIMIT_EXCEEDED'),
-    ('IDLENESS_LIMIT_EXCEEDED', 'IDLENESS_LIMIT_EXCEEDED'),
-    ('SECURITY_VIOLATED', 'SECURITY_VIOLATED'),
-    ('CRASHED', 'CRASHED'),
-    ('INPUT_PREPARATION_CRASHED', 'INPUT_PREPARATION_CRASHED'),
-    ('CHALLENGED', 'CHALLENGED'),
-    ('SKIPPED', 'SKIPPED'),
-    ('TESTING', 'TESTING'),
-    ('REJECTED', 'REJECTED'),
-]
 
 class CFProblem(models.Model):
     # contest = models.ForeignKey(CFContest, on_delete=models.CASCADE)
@@ -48,12 +29,11 @@ class CFProblemAndTag(models.Model):
 
 
 class CFSubmission(models.Model):
-    cf_id = models.IntegerField()
-
-    creation_time = models.IntegerField() # jakiś unix-format XD
+    submit_time = models.DateTimeField(default=timezone.now())
     problem = models.ForeignKey(CFProblem, on_delete=models.CASCADE)
     user = models.ForeignKey(CFUser, on_delete=models.CASCADE)
-    verdict  = models.CharField(max_length=255, choices=VERDICTS, null=True, blank=True)
+    verdict  = models.BooleanField(default=False)
+    accept_time = models.DateTimeField(null=True, blank=True)
 
 
 

@@ -3,16 +3,12 @@ import sys
 
 import django
 
-# Ustawienie zmiennej środowiskowej na konfigurację Django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'EeXoR.settings')
 
-# Inicjalizacja Django
 django.setup()
 
-# Dopiero teraz możesz zaimportować modele lub inne elementy związane z Django
 from main_system.database import add_problem
 
-# Reszta Twojego kodu
 import requests
 def get_task_tag(tag: str):
     url = "https://codeforces.com/api/problemset.problems?tags="
@@ -20,7 +16,7 @@ def get_task_tag(tag: str):
     url += "}"
     response = requests.get(url).json()
     try:
-        problems = response['result']['problems']  # W twoim kodzie brakowało odniesienia do 'problems' w 'result'
+        problems = response['result']['problems']
 
         for i in range(min(len(problems), 100)):
             problem = problems[i]

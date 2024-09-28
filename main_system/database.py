@@ -1,4 +1,5 @@
 from .models import CFUser, CFSubmission, CFProblemAndTag, CFProblem
+from django.utils import timezone
 
 
 def get_problems_by_user_and_tags(cf_user, tags):
@@ -36,6 +37,21 @@ def add_problem(problemset_name: str, index: str, name: str, points: int, rating
             for tag in tags:
                 add_problem_tag(new_problem, tag)
             return new_problem
+    except Exception as e:
+        print(e)
+        return None
+
+
+def add_submission(name: str, handle: str):
+    try:
+        problem = CFProblem.objects.get(name=name)
+        user = CFUser.objects.get(handle=handle)
+        if not CFSubmission.objects.filter(user=user, problem=problem).exists():
+            print("chuj")
+            new_submission = CFSubmission.objects.create(user=user, problem=problem, verdict=False)
+            return new_submission
+        else:
+            CFSubmission.objects.filter(user=user, problem=problem).update(verdict=True, accept_time=timezone.now())
     except Exception as e:
         print(e)
         return None
