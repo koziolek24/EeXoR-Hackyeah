@@ -40,7 +40,7 @@ class Problem:
         output_string += str(self.get_tags()) + " "
         return output_string
     
-    def convert_to_json(self):
+    def convert_to_dict(self):
         data = {
             "name": self.name,
             "link": self.link,
@@ -50,7 +50,7 @@ class Problem:
             "problem_id": self.problem_id,
             "tags": self.tags
         }
-        return json.dumps(data)
+        return data
 
 
 def calculate_performence(problem: list[Problem]) -> int:
@@ -140,23 +140,27 @@ def filter_problems_by_rating(problems: list[Problem], min_rating: int, max_rati
     
     return filtered_problems
 
+def calculate_average(values):
+    average = sum(values) / len(values)
+    return average
 
-def get_random_problem_with_tag(problems: list[Problem], tag: str) -> Problem:
-    filtered_problems = filter_problems_by_tag(problems, tag)
-    print(filtered_problems)
-    ammount_of_problems = len(filtered_problems)
-    print(ammount_of_problems)
+def get_random_problem(problems: list[Problem]) -> Problem:
+    # filtered_problems = filter_problems_by_tag(problems, tag)
+    ammount_of_problems = len(problems)
     if ammount_of_problems == 0:
         return None
     
     random_number = randint(0, ammount_of_problems-1)
-    return filtered_problems[random_number]
+    return problems[random_number]
 
-def get_problem_by_tag(username: int, tags: list[str]):
+def get_problem_by_tag(username: int, tags: list[str]) -> dict:
+    response = # get data here
+    problems = response.json()
+    final_problem = get_random_problem(problems)
+    return final_problem.convert_to_dict()
+
+def get_recommended_problem(username: str) -> dict:
     pass
 
-def get_recommended_problem(username: str):
-    pass
-
-def get_random_problem(username: str):
+def get_random_problem(username: str) -> dict:
     pass
