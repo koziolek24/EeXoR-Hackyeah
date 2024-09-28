@@ -1,8 +1,11 @@
+from django.http import JsonResponse
+
 from .models import CFUser, CFSubmission, CFProblemAndTag, CFProblem
 from django.utils import timezone
 
 
 def get_problems_by_user_and_tags(cf_user, tags : list[str]) -> list[CFProblem]:
+    # Markowe
     user_submissions = CFSubmission.objects.all().filter(user=cf_user)
     matching_problems = []
     for submission in user_submissions:
@@ -63,17 +66,23 @@ def add_submission(name: str, handle: str):
 def get_problem_by_user(handle: str):
     try:
         user = CFUser.objects.get(handle=handle)
-        return CFSubmission.objects.filter(user=user, verdict=True).all()
+        user_problems = CFProblem.objects.filter(cfsubmission__user=user, cfsubmission__verdict=True)
+        user_problems_list = list(user_problems.values('name', 'rating', 'points', 'index'))
+        return JsonResponse({'user_problems_list': user_problems_list})
+
+    # TODO
     except Exception as e:
         print(e)
 
 def get_problem_with_rating_and_tag(min_rating: int, max_rating, tag: str):
+    # TODO
     try:
         return CFProblem.objects.filter(rating__range=(min_rating, max_rating), cfproblemandtag__tag=tag).all()
     except Exception as e:
         print(e)
 
 def get_problem_by_tag(handle: str, tag: str):
+    # TODO
     # every task with tag not started by user
     problems_w_tag = CFProblem.objects.filter(cfproblemandtag__tag=tag)
     user = CFUser.objects.get(handle=handle)
@@ -82,6 +91,7 @@ def get_problem_by_tag(handle: str, tag: str):
     return unsolved_problems
 
 def get_problem_by_rating(handle: str, min_rating: int, max_rating: int):
+    # TODO
     # every task between rating not started
     problems_w_rating = CFProblem.objects.filter(rating__range=(min_rating, max_rating))
     user = CFUser.objects.get(handle=handle)
@@ -90,6 +100,7 @@ def get_problem_by_rating(handle: str, min_rating: int, max_rating: int):
     return unsolved_problems
 
 def get_tags_to_a_problem(name: str):
+    # TODO
     try:
         problem = CFProblem.objects.get(name=name)
         tags = CFProblemAndTag.objects.filter(problem=problem).all()
