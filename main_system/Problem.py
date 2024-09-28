@@ -1,15 +1,15 @@
 from random import randint
-from models import CFUser
+import json
 
 class Problem:
     def __init__(self, data):
-        self.name = data.name
-        self.link = data.link
-        self.rating = data.rating
-        self.is_solved = data.is_solved
-        self.time = data.time
-        self.problem_id = data.problem_id
-        self.tags = data.tags
+        self.name = data["name"]
+        self.link = data["link"]
+        self.rating = data["rating"]
+        self.is_solved = data["is_solved"]
+        self.time = data["time"]
+        self.problem_id = data["problem_id"]
+        self.tags = data["tags"]
 
     def get_name(self) -> str:
         return self.name
@@ -39,13 +39,26 @@ class Problem:
         output_string += str(self.get_rating()) + " "
         output_string += str(self.get_tags()) + " "
         return output_string
+    
+    def convert_to_json(self):
+        data = {
+            "name": self.name,
+            "link": self.link,
+            "rating": self.rating,
+            "is_solved": self.is_solved,
+            "time": self.time,
+            "problem_id": self.problem_id,
+            "tags": self.tags
+        }
+        return json.dumps(data)
+
 
 def calculate_performence(problem: list[Problem]) -> int:
-    performence = problem.getRating() * 10
+    performence = problem.getRating() * 20
     performence //= problem.getTime()
     return performence
 
-# there for sure are more than 0 problems
+# there for sure are more than 0 problems (checked earlier)
 def evaluate_problems(problems: list[Problem]) -> int:
     performence = 0
     ammount_of_problems = len(problems)
@@ -88,11 +101,27 @@ def sort_problems_by_tags(problems: list[Problem]) -> list[Problem]:
     
     return sorted_problems
 
+def get_worst_tags(problems: list[Problem]):
+    sorted_tagwise = sort_problems_by_tags(problems)
+    evaluated_tags = []
+    for tag in sorted_tagwise:
+        evaluated_tags.append([evaluate_problems([sorted_tagwise[x] for x in range(min([sorted_tagwise[tag], 10]))]), tag])
+    
+    sorted(evaluated_tags, key=lambda x: x[0])
+
+    worst_tags = []
+    for i in range(min([len(evaluated_tags), 3])):
+        worst_tags.append(evaluated_tags[i][1])
+    
+    return worst_tags
+        
+
 def filter_problems_by_tag(problems: list[Problem], tag: str) -> list[Problem]:
     filtered_problems = []
 
     for problem in problems:
         problem_tags = problem.get_tags()
+        print(problem_tags)
         if tag in problem_tags:
             filtered_problems.append(problem)
     
@@ -114,9 +143,9 @@ def filter_problems_by_rating(problems: list[Problem], min_rating: int, max_rati
 
 def get_random_problem_with_tag(problems: list[Problem], tag: str) -> Problem:
     filtered_problems = filter_problems_by_tag(problems, tag)
-
+    print(filtered_problems)
     ammount_of_problems = len(filtered_problems)
-
+    print(ammount_of_problems)
     if ammount_of_problems == 0:
         return None
     
