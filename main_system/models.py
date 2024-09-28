@@ -16,7 +16,7 @@ class CFUser(models.Model):
 
 class CFProblem(models.Model):
     # contest = models.ForeignKey(CFContest, on_delete=models.CASCADE)
-    problemset_name = models.CharField(max_length=255, unique=True)
+    problemset_name = models.CharField(max_length=255)
     index = models.CharField(max_length=255) # np. A, B, C, D
     name = models.CharField(max_length=255)
     points = models.FloatField(null=True, blank=True, default=None)
