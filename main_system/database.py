@@ -31,10 +31,11 @@ def add_problem_tag(problem: CFUser, tag: str):
 
 def add_problem(problemset_name: str, index: str, name: str, points: int, rating: int, tags: list):
     try:
-        new_problem = CFProblem.objects.create(problemset_name=problemset_name, index=index, name=name, points=points, rating=rating)
-        for tag in tags:
-            add_problem_tag(new_problem, tag)
-        return new_problem
+        if not CFProblem.objects.filter(name=name).exists():
+            new_problem = CFProblem.objects.create(problemset_name=problemset_name, index=index, name=name, points=points, rating=rating)
+            for tag in tags:
+                add_problem_tag(new_problem, tag)
+            return new_problem
     except Exception as e:
         print(e)
         return None
