@@ -55,7 +55,7 @@ def add_submission(name: str, handle: str):
             new_submission.save()
             return new_submission
         else:
-            CFSubmission.objects.filter(problem=problem, user=user).update(verdict=True, accept_time=timezone.now())
+            CFSubmission.objects.filter(problem=problem, user=user).update(verdict=True)
     except Exception as e:
         print(e)
         return None
