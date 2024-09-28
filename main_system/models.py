@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 PARTICIPANT_TYPES = [
     ('CONTESTANT', 'CONTESTANT'), 
@@ -8,30 +9,33 @@ PARTICIPANT_TYPES = [
     ('OUT_OF_COMPETITION', 'OUT_OF_COMPETITION'),
 ]
 
-VERDICTS = [
-    ('FAILED', 'FAILED'),
-    ('OK', 'OK'),
-    ('PARTIAL', 'PARTIAL'),
-    ('COMPILATION_ERROR,', 'COMPILATION_ERROR,'),
-    ('RUNTIME_ERROR', 'RUNTIME_ERROR'),
-    ('WRONG_ANSWER', 'WRONG_ANSWER'),
-    ('PRESENTATION_ERROR', 'PRESENTATION_ERROR'),
-    ('TIME_LIMIT_EXCEEDED', 'TIME_LIMIT_EXCEEDED'),
-    ('MEMORY_LIMIT_EXCEEDED', 'MEMORY_LIMIT_EXCEEDED'),
-    ('IDLENESS_LIMIT_EXCEEDED', 'IDLENESS_LIMIT_EXCEEDED'),
-    ('SECURITY_VIOLATED', 'SECURITY_VIOLATED'),
-    ('CRASHED', 'CRASHED'),
-    ('INPUT_PREPARATION_CRASHED', 'INPUT_PREPARATION_CRASHED'),
-    ('CHALLENGED', 'CHALLENGED'),
-    ('SKIPPED', 'SKIPPED'),
-    ('TESTING', 'TESTING'),
-    ('REJECTED', 'REJECTED'),
-]
-
 class CFUser(models.Model):
     handle = models.CharField(max_length=255)
     rank = models.CharField(max_length=255)
     rating = models.IntegerField()
+
+class CFProblem(models.Model):
+    # contest = models.ForeignKey(CFContest, on_delete=models.CASCADE)
+    problemset_name = models.CharField(max_length=255)
+    index = models.CharField(max_length=255) # np. A, B, C, D
+    name = models.CharField(max_length=255)
+    points = models.FloatField(null=True, blank=True, default=None)
+    rating = models.IntegerField(null=True, blank=True, default=None)
+
+
+class CFProblemAndTag(models.Model):
+    problem = models.ForeignKey(CFProblem, on_delete=models.CASCADE)
+    tag = models.CharField(max_length=255)
+
+
+class CFSubmission(models.Model):
+    submit_time = models.DateTimeField(default=timezone.now())
+    problem = models.ForeignKey(CFProblem, on_delete=models.CASCADE)
+    user = models.ForeignKey(CFUser, on_delete=models.CASCADE)
+    verdict  = models.BooleanField(default=False)
+    accept_time = models.DateTimeField(null=True, blank=True)
+
+
 
 class CFContest(models.Model):
     contest_id = models.IntegerField()
@@ -52,26 +56,3 @@ class CFUserAndContest(models.Model): # oparte na Party i Member
     contest = CFContest(models.Model)
     participant_type = models.CharField(max_length=255, choices=PARTICIPANT_TYPES)
 
-
-class CFProblem(models.Model):
-    contest = models.ForeignKey(CFContest, on_delete=models.CASCADE)
-    problemset_name = models.CharField(max_length=255)
-    index = models.CharField(max_length=255) # np. A, B, C, D
-    name = models.CharField(max_length=255)
-    points = models.FloatField()
-    rating = models.IntegerField()
-
-
-class CFProblemAndTag(models.Model):
-    problem = models.ForeignKey(CFProblem, on_delete=models.CASCADE)
-    tag = models.CharField(max_length=255)
-
-
-class CFSubmission(models.Model):
-    cf_id = models.IntegerField()
-    contest = models.ForeignKey(CFContest, on_delete=models.CASCADE, null=True, 
-                                blank=True) 
-    creation_time = models.IntegerField() # jakiś unix-format XD
-    problem = models.ForeignKey(CFProblem, on_delete=models.CASCADE)
-    user = models.ForeignKey(CFUser, on_delete=models.CASCADE)
-    verdict  = models.CharField(max_length=255, choices=VERDICTS, null=True, blank=True)

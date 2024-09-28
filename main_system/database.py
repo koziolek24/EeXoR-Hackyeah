@@ -1,4 +1,5 @@
 from .models import CFUser, CFSubmission, CFProblemAndTag, CFProblem
+from django.utils import timezone
 
 
 def get_problems_by_user_and_tags(cf_user, tags : list[str]) -> list[CFProblem]:
@@ -13,10 +14,44 @@ def get_problems_by_user_and_tags(cf_user, tags : list[str]) -> list[CFProblem]:
             matching_problems.append(problem)
     return matching_problems
 
-def get_all_problems_of_user(cf_user: str) -> list[CFProblem]:
-    user_submissions = CFSubmission.objects.all().filter(user=cf_user)
-    for submission in user_submissions:
-        problem = submission.problem
-        problem_tag_records = CFProblemAndTag.objects.all().filter(problem=problem)
-        problems = problem_tag_records.values_list('problem', flat=True)
-    return problems
+def add_cf_user(handle: str, rank: str, rating: int):
+    try:
+        new_user = CFUser.objects.create(handle=handle, rank=rank, rating=rating)
+        return new_user
+    except Exception as e:
+        print(e)
+        return None
+
+def add_problem_tag(problem: CFUser, tag: str):
+    try:
+        new_problem_tag = CFProblemAndTag.objects.create(problem=problem, tag=tag)
+        return new_problem_tag
+    except Exception as e:
+        print(e)
+        return None
+
+def add_problem(problemset_name: str, index: str, name: str, points: int, rating: int, tags: list):
+    try:
+        if not CFProblem.objects.filter(name=name).exists():
+            new_problem = CFProblem.objects.create(problemset_name=problemset_name, index=index, name=name, points=points, rating=rating)
+            for tag in tags:
+                add_problem_tag(new_problem, tag)
+            return new_problem
+    except Exception as e:
+        print(e)
+        return None
+
+
+def add_submission(name: str, handle: str):
+    try:
+        problem = CFProblem.objects.get(name=name)
+        user = CFUser.objects.get(handle=handle)
+        if not CFSubmission.objects.filter(user=user, problem=problem).exists():
+            print("chuj")
+            new_submission = CFSubmission.objects.create(user=user, problem=problem, verdict=False)
+            return new_submission
+        else:
+            CFSubmission.objects.filter(user=user, problem=problem).update(verdict=True, accept_time=timezone.now())
+    except Exception as e:
+        print(e)
+        return None
