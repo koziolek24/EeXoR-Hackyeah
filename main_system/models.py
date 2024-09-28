@@ -10,13 +10,13 @@ PARTICIPANT_TYPES = [
 ]
 
 class CFUser(models.Model):
-    handle = models.CharField(max_length=255)
+    handle = models.CharField(max_length=255, unique=True)
     rank = models.CharField(max_length=255)
     rating = models.IntegerField()
 
 class CFProblem(models.Model):
     # contest = models.ForeignKey(CFContest, on_delete=models.CASCADE)
-    problemset_name = models.CharField(max_length=255)
+    problemset_name = models.CharField(max_length=255, unique=True)
     index = models.CharField(max_length=255) # np. A, B, C, D
     name = models.CharField(max_length=255)
     points = models.FloatField(null=True, blank=True, default=None)
