@@ -5,7 +5,7 @@ django.setup()
 
 from random import randint
 import json
-from main_system.database import get_problem_by_tag, get_problem_by_rating, get_user_rating
+from main_system.database import get_problem_by_tag, get_problem_by_rating, get_user_rating, get_problem_by_user, get_tags_to_a_problem
 
 class Problem:
     def __init__(self, _name, _rating, _points, _index):
@@ -33,12 +33,24 @@ class Problem:
     def get_tags(self) -> list[str]:
         return self.tags
     
+    def get_points(self) -> int:
+        if self.points is None:
+            return -1
+        return self.points
+    
+    def get_index(self) -> str:
+        return self.index
+    
     def convert_to_dict(self):
+        print(self.get_name())
+        print(self.get_rating())
+        print(self.get_points())
+        print(self.get_index())
         data = {
-            "name": self.name,
-            "rating": self.rating,
-            "points": self.points,
-            "index": self.index,
+            "name": self.get_name(),
+            "rating": self.get_rating(),
+            "points": self.get_points(),
+            "index": self.get_index(),
         }
         return data
 
@@ -81,8 +93,10 @@ def sort_problems_by_tags(problems: list[Problem]) -> list[Problem]:
     for tag in all_tags:
         sorted_problems[tag] = []
 
+    print(problems)
     for problem in problems:
-        problem_tags = problem.get_tags()
+        problem_tags = get_tags_to_a_problem(problem.get_name())
+        print(problem_tags)
         for tag in problem_tags:
             sorted_problems[tag].append(problem)
     
@@ -110,7 +124,7 @@ def filter_problems_by_tag(problems: list[Problem], tag: str) -> list[Problem]:
     filtered_problems = []
 
     for problem in problems:
-        problem_tags = problem.get_tags()
+        problem_tags = problem.get()
         if tag in problem_tags:
             filtered_problems.append(problem)
     
@@ -144,18 +158,25 @@ def get_random_problem(problems: list[Problem]) -> Problem:
 
 def get_rating_range(user_rating):
     user_rating//=100
-    min_rating = max([0, (user_rating - 2)*100])
-    max_rating = (user_rating + 2)*100
+    min_rating = max([800, (user_rating - 2)*100])
+    max_rating = max([1000, (user_rating + 2)*100])
     return [min_rating, max_rating]
+
+def list_to_problems(problems_list: list[dict]) -> list[Problem]:
+    all_problems = []
+    for problem in problems_list:
+        current_problem = Problem(problem["name"], problem["rating"], problem["points"], problem["index"])
+        all_problems.append(current_problem)
     
+    return all_problems
 
 def get_problem_with_tag(username: int, tags: list[str]) -> dict:
     all_problems = []
     for tag in tags:
         response = get_problem_by_tag(username, tag)
-        for problem in response:
-            current_problem = Problem(problem["name"], problem["rating"], problem["points"], problem["index"])
-            all_problems.append(current_problem)
+        tmp = list_to_problems(response)
+        for problem in tmp:
+            all_problems.append(problem)
     
     rating_range = get_rating_range(get_user_rating(username))
     all_problems = filter_problems_by_rating(all_problems, rating_range[0], rating_range[1])
@@ -163,7 +184,14 @@ def get_problem_with_tag(username: int, tags: list[str]) -> dict:
     return final_problem.convert_to_dict()
 
 def get_recommended_problem(username: str) -> dict:
-    pass
+    response = get_problem_by_user(username)
+    print(response)
+    if len(response) == 0:
+        return get_problem_with_tag("cacteyy", ["math"])
+    all_problems = list_to_problems(response)
+    tags = get_worst_tags(all_problems)
+    print(tags)
+    return get_problem_with_tag(username, tags)
 
 def get_random_problem(username: str) -> dict:
     pass
