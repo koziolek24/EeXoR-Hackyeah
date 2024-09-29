@@ -151,12 +151,24 @@ def get_user_rating(handle: str):
         print(e)
         return None
 
-# def get_user_data(handle: str):
-#     try:
-#         user_data = {
-#             'handle': None,
-#             'rank': None,
-#
-#                      }
-#     pass
-#     # TODO pierdolnac tu cos
+def get_user_data(handle: str):
+    try:
+        user_data = {
+            'handle': None,
+            'rank': None,
+            'rating': None,
+            'solved': None,
+            'started': None,
+            'Time': None
+        }
+        user = CFUser.objects.get(handle=handle)
+        user_data['handle'] = user.handle
+        user_data['rank'] = user.rank
+        user_data['rating'] = user.rating
+        user_data['solved'] = len(CFSubmission.objects.filter(user=user, verdict=True).values_list('problem', flat=True))
+        user_data['started'] = len(CFSubmission.objects.filter(user=user).values_list('problem', flat=True))
+        return user_data
+    except Exception as e:
+        print(e)
+        return None
+    # TODO pierdolnac tu cos
