@@ -1,3 +1,5 @@
+from csv import excel
+
 from .models import CFUser, CFSubmission, CFProblemAndTag, CFProblem, CFTag
 from django.utils import timezone
 from django.contrib.auth.models import User as AUser
@@ -181,8 +183,8 @@ def get_user_problem_list(handle: str):
 def get_user_problem_list_by_tag(handle: str, tag: str):
     try:
         user = CFUser.objects.get(handle=handle)
-        problem_list_solved = list(CFProblem.objects.filter(cfsubmission__user=user, cfsubmission__verdict=True).values_list('name', 'rating', 'points', 'index'))
-        problem_list_started = list(CFProblem.objects.filter(cfsubmission__user=user).values_list('name', 'rating', 'points', 'index'))
+        problem_list_solved = list(CFProblem.objects.filter(cfsubmission__user=user, cfsubmission__verdict=True, cfproblemandtag__tag=tag).values_list('name', 'rating', 'points', 'index'))
+        problem_list_started = list(CFProblem.objects.filter(cfsubmission__user=user, cfproblemandtag__tag=tag).values_list('name', 'rating', 'points', 'index'))
         return problem_list_started, problem_list_solved
     except Exception as e:
         print(e)
