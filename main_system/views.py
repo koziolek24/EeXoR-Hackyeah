@@ -13,7 +13,7 @@ from .database import user_exists, handle_from_user_id
 from .auth import (login_user, logout_user,
                    get_csrf_token, get_drf_token, get_auser)
 from rest_framework.decorators import action
-from .database import add_submission
+from .database import add_submission, get_tags_to_a_problem
 from .Problem import get_problem_with_tag, get_recommended_problem, get_random_problem
 
 # Informacje zwrotne
@@ -176,6 +176,17 @@ class CFProblemViewSet(viewsets.ModelViewSet):
         handle = handle_from_user_id(int(request.data['user_id']))
         problem_dict = get_random_problem(handle)
         return JsonResponse(problem_dict)
+
+    @csrf_exempt
+    @action(detail=True, methods=['get'])
+    def list_tag(self, request, pk=None):
+        problem = self.get_object()
+        print("t1")
+        tags_list = get_tags_to_a_problem(problem.name)
+        print("t2")
+        return JsonResponse(tags_list, safe=False)
+        
+        
 
 
 class CFProblemAndTagViewSet(viewsets.ModelViewSet):
