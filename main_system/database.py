@@ -4,6 +4,7 @@ from .models import CFUser, CFSubmission, CFProblemAndTag, CFProblem, CFTag
 from django.utils import timezone
 from django.contrib.auth.models import User as AUser
 from django.http import JsonResponse
+from datetime import timedelta
 
 
 def get_problems_by_user_and_tags(cf_user, tags : list[str]) -> list[CFProblem]:
@@ -72,7 +73,8 @@ def add_submission(name: str, handle: str):
             new_submission.save()
             return new_submission
         else:
-            CFSubmission.objects.filter(problem=problem, user=user).update(verdict=True)
+            accept_time = timezone.now()
+            CFSubmission.objects.filter(problem=problem, user=user).update(verdict=True, accept_time=accept_time)
     except Exception as e:
         print(e)
         return None
@@ -186,6 +188,16 @@ def get_user_problem_list_by_tag(handle: str, tag: str):
         problem_list_solved = list(CFProblem.objects.filter(cfsubmission__user=user, cfsubmission__verdict=True, cfproblemandtag__tag=tag).values_list('name', 'rating', 'points', 'index'))
         problem_list_started = list(CFProblem.objects.filter(cfsubmission__user=user, cfproblemandtag__tag=tag).values_list('name', 'rating', 'points', 'index'))
         return problem_list_started, problem_list_solved
+    except Exception as e:
+        print(e)
+        return None
+
+
+def get_time_per_tag(handle: str, tag: str):
+    try:
+        user = CFUser.objects.get(handle=handle)
+        submit_list = list(CFSubmission.objects.filter(user=user, verdict=True, problem__cfproblemandtag__tag=tag).values_list('submit_time', 'accept_time'))
+        return submit_list
     except Exception as e:
         print(e)
         return None
