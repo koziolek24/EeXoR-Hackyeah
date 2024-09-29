@@ -14,17 +14,26 @@ export async function middleware(request: NextRequest) {
     const cookieStore = cookies();
     if(cookieStore.has(sessionSettings.cookieName))
     {
-        return NextResponse.next();
+        const response = NextResponse.next();
+        if (new URL(request.url).pathname == "/dashboard/logout") {
+            response.cookies.delete(sessionSettings.cookieName);
+        }
+        return response;
     }
 
-    const formData = await request.formData();
-    if (request.method === "POST" && new URL(request.url).pathname == "/dashboard" && formData.has("login")) {
+    let formData;
+    try {
+        formData = await request.formData();
+    } catch(err) {
+        return NextResponse.redirect(new URL("/", request.url));
+    }
+
+    if (new URL(request.url).pathname == "/dashboard" && request.method === "POST" && formData.has("login")) {
         const login = formData.get("login");
         const userId = 1; // select by  login
 
         const response = NextResponse.next();
         response.cookies.set(sessionSettings.cookieName, userId.toString())
-
         return response;
     }
 
