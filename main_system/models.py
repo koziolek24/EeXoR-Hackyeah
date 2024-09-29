@@ -10,7 +10,7 @@ PARTICIPANT_TYPES = [
 ]
 
 class CFUser(models.Model):
-    handle = models.CharField(max_length=255)
+    handle = models.CharField(max_length=255, unique=True)
     rank = models.CharField(max_length=255)
     rating = models.IntegerField()
 
