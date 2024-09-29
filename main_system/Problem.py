@@ -1,6 +1,11 @@
+import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'EeXoR.settings')
+import django
+django.setup()
+
 from random import randint
 import json
-import database
+import main_system.database
 
 class Problem:
     def __init__(self, data):
