@@ -26,7 +26,16 @@ export async function middleware(request: NextRequest) {
     }
 
     if (new URL(request.url).pathname == "/dashboard" && request.method === "POST" && formData.has("login")) {
-        const login = formData.get("login");
+        const login = formData.get("login")?.toString();
+        formData = new FormData();
+        formData.set("handle", login);
+        const res = await fetch(`${process.env.API_URL}/login/`, {
+            method: "POST",
+            body: formData,
+        });
+
+        console.log(res.status, res.json());
+
         const userId = 1; // select by  login
 
         const response = NextResponse.next();
