@@ -16,8 +16,9 @@ router.register('cf_submissions', CFSubmissionViewSet)
 
 urlpatterns = [
     path('test/', test_view),
+    path('is_logged/', is_logged_test_view),
+
     path('register/', request_register),
     path('login/', request_login),
-    path('logout/', request_logout),
 ]
 urlpatterns += router.urls
