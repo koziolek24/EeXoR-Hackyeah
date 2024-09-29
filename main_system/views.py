@@ -9,11 +9,11 @@ from .responses import (FrontendMessage, get_ok_response,
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views.decorators.csrf import csrf_exempt
 from .database import add_cf_user, get_user_problem_list_by_tag
-from .database import user_exists, handle_from_user_id
+from .database import user_exists, handle_from_user_id, get_user_problem_list
 from .auth import (login_user, logout_user,
                    get_csrf_token, get_drf_token, get_auser)
 from rest_framework.decorators import action
-from .database import add_submission
+from .database import add_submission, get_tags_to_a_problem, get_time_problem
 from .Problem import get_problem_with_tag, get_recommended_problem, get_random_problem
 
 # Informacje zwrotne
@@ -148,11 +148,15 @@ class CFProblemViewSet(viewsets.ModelViewSet):
             return get_internal_server_error('Operacja się nie powiodła')
     
     @csrf_exempt
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['post'])
     def started(self, request):
         handle = handle_from_user_id(int(request.data['user_id']))
-        tag = request.query_params['tag']
-        started, solved = get_user_problem_list_by_tag(handle, tag)
+        
+        if 'tag' in request.data:
+            tag = request.data['tag']
+            started, solved = get_user_problem_list_by_tag(handle, tag)
+        else:
+            started, solved = get_user_problem_list(handle)
         return get_json_response_from(started, 200, iterate=True)
     
     @csrf_exempt
@@ -162,6 +166,38 @@ class CFProblemViewSet(viewsets.ModelViewSet):
         tag = request.query_params['tag']
         started, solved = get_user_problem_list_by_tag(handle, tag)
         return get_json_response_from(solved, 200, iterate=True)
+    
+    @csrf_exempt
+    @action(detail=False, methods=['get'])
+    def find(self, request):
+        handle = handle_from_user_id(int(request.data['user_id']))
+        problem_dict = get_recommended_problem(handle)
+        return JsonResponse(problem_dict)
+
+    @csrf_exempt
+    @action(detail=False, methods=['get'])
+    def rand(self, request):
+        handle = handle_from_user_id(int(request.data['user_id']))
+        problem_dict = get_random_problem(handle)
+        return JsonResponse(problem_dict)
+
+    @csrf_exempt
+    @action(detail=True, methods=['get'])
+    def list_tag(self, request, pk=None):
+        problem = self.get_object()
+        print("t1")
+        tags_list = get_tags_to_a_problem(problem.name)
+        print("t2")
+        return JsonResponse(tags_list, safe=False)
+    
+    @csrf_exempt
+    @action(detail=True, methods=['get'])
+    def time(self, request, pk=None):
+        problem = self.get_object()
+        handle = handle_from_user_id(int(request.data['user_id']))
+        times = list(get_time_problem(handle, problem.name))
+        return JsonResponse(times, safe=False)
+        
         
 
 
@@ -177,3 +213,16 @@ class CFSubmissionViewSet(viewsets.ModelViewSet):
 class CFTagViewSet(viewsets.ModelViewSet):
     queryset = CFTag.objects.all()
     serializer_class = CFTagSerializer
+
+    @csrf_exempt
+    @action(detail=True, methods=['get'])
+    def find(self, request, pk=None):
+        try:
+            print(request.query_params)
+            tag = self.get_object()
+            handle = handle_from_user_id(int(request.query_params['user_id']))
+            problem_dict = get_problem_with_tag(handle, [tag.tag])
+            return JsonResponse(problem_dict)
+        except Exception as e:
+            return get_internal_server_error(e)
+        

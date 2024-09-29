@@ -207,3 +207,14 @@ def get_time_per_tag(handle: str, tag: str):
     except Exception as e:
         print(e)
         return None
+    
+def get_time_problem(handle: str, name: str):
+    try:
+        user = CFUser.objects.get(handle=handle)
+        problem = CFProblem.objects.get(name=name)
+        time_submit = list(CFSubmission.objects.filter(user=user, problem=problem).values("submit_time"))
+        time_accept = list(CFSubmission.objects.filter(user=user, problem=problem).values("accept_time"))
+        return (time_submit, time_accept)
+    except Exception as e:
+        print(e)
+        return None
