@@ -1,14 +1,14 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from rest_framework import viewsets
 from .models import *
 from .serializers import *
 from .responses import (FrontendMessage, get_ok_response,
                         get_bad_request_error, get_internal_server_error,
-                        get_custom_response)
+                        get_custom_response, get_json_response_from)
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views.decorators.csrf import csrf_exempt
-from .database import add_cf_user
+from .database import add_cf_user, get_user_problem_list_by_tag
 from .database import user_exists, handle_from_user_id
 from .auth import (login_user, logout_user,
                    get_csrf_token, get_drf_token, get_auser)
@@ -145,6 +145,23 @@ class CFProblemViewSet(viewsets.ModelViewSet):
             return get_ok_response('Ok')
         else:
             return get_internal_server_error('Operacja się nie powiodła')
+    
+    @csrf_exempt
+    @action(detail=False, methods=['get'])
+    def started(self, request):
+        handle = handle_from_user_id(int(request.data['user_id']))
+        tag = request.query_params['tag']
+        started, solved = get_user_problem_list_by_tag(handle, tag)
+        return get_json_response_from(started, 200, iterate=True)
+    
+    @csrf_exempt
+    @action(detail=False, methods=['get'])
+    def finished(self, request):
+        handle = handle_from_user_id(int(request.data['user_id']))
+        tag = request.query_params['tag']
+        started, solved = get_user_problem_list_by_tag(handle, tag)
+        return get_json_response_from(solved, 200, iterate=True)
+        
 
 
 class CFProblemAndTagViewSet(viewsets.ModelViewSet):

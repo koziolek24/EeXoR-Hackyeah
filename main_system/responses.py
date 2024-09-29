@@ -5,8 +5,14 @@ from django.http import JsonResponse
 # Standardowe responsy, errory HTTP itp
 
 
-def get_json_response_from(obj, http_code):
-    response = JsonResponse(obj.to_dict())
+def get_json_response_from(obj, http_code, iterate=False):
+    if type(obj) == list or iterate:
+        data_dict = {}
+        for single_obj, i in zip(obj, range(len(obj))):
+            data_dict[i] = single_obj.to_dict()
+    else:
+        data_dict = obj.to_dict()
+    response = JsonResponse(data_dict, json_dumps_params={'ensure_ascii': False})
     response.status_code = http_code
     return response
 

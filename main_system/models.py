@@ -22,6 +22,15 @@ class CFProblem(models.Model):
     points = models.FloatField(null=True, blank=True, default=None)
     rating = models.IntegerField(null=True, blank=True, default=None)
 
+    def to_dict(self):
+        dict = {}
+        dict['problemset_name'] = self.problemset_name
+        dict['index'] = self.index
+        dict['name'] = self.name
+        dict['points'] = self.points
+        dict['rating'] = self.rating
+        return dict
+
 
 class CFProblemAndTag(models.Model):
     problem = models.ForeignKey(CFProblem, on_delete=models.CASCADE)

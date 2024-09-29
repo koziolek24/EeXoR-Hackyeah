@@ -8,7 +8,7 @@ router.register('cf_users', CFUserViewSet)
 router.register('cf_contests', CFContestViewSet)
 router.register('cf_rating_changes', CFRatingChangeViewSet)
 router.register('cf_user_and_contests', CFUserAndContestViewSet)
-router.register('cf_problem', CFProblemViewSet)
+router.register('cf_problems', CFProblemViewSet)
 router.register('cf_problem_and_tags', CFProblemAndTagViewSet)
 router.register('cf_submissions', CFSubmissionViewSet)
 
