@@ -73,6 +73,7 @@ def request_login(request):
                 drf_token = get_drf_token(auser)
                 msg = FrontendMessage(csrf_token=csrf_token,
                                       drf_token=drf_token.key)
+                msg.add_field('user_id', CFUser.objects.all().get(handle=handle).id)
                 # wysylanie odpowiedzi
                 response = get_custom_response(msg, 200)
                 return response
@@ -83,15 +84,16 @@ def request_login(request):
     except Exception as e:
         return get_internal_server_error(e)
 
-
-def request_logout(request):
-    logout_user(request)
-    return get_ok_response("Wylogowano poprawnie.")
-
 # Other views functions
 
 def test_view(request):
     return HttpResponse("test")
+
+def is_logged_test_view(request):
+    if request.user.is_authenticated:
+        return HttpResponse("Jest zalogowany")
+    else:
+        return HttpResponse("Nie jest zalogowany")
 
 # DRF Viewsets
 
