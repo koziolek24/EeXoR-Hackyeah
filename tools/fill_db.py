@@ -2,7 +2,7 @@ import os
 import django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'EeXoR.settings')
 django.setup()
-from main_system.database import add_problem
+from main_system.database import add_problem, add_tags
 import requests
 
 tags = [
@@ -65,5 +65,10 @@ def add_task_db(tag):
         return None
 
 
+def add_tag(tag):
+    add_tags(tag)
+
+
 for tag in tags:
     add_task_db(tag)
+    add_tag(tag)
