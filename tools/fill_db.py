@@ -2,7 +2,7 @@ import os
 import django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'EeXoR.settings')
 django.setup()
-from main_system.database import add_problem, add_tags
+from main_system.database import add_problem
 import requests
 
 tags = [
@@ -46,10 +46,10 @@ tags = [
 
 def add_task_db(tag):
     url = f'https://codeforces.com/api/problemset.problems?tags={tag}'
-    response = requests.get(url).json()
+    response = requests.get(url)
     try:
+        response = response.json()
         problems = response['result']['problems']
-
         for i in range(min(len(problems), 100)):
             problem = problems[i]
             Id = problem.get('contestId')
@@ -64,13 +64,6 @@ def add_task_db(tag):
         print(e)
         return None
 
-def add_tag_db(tag):
-    try:
-        add_tags(tag)
-    except Exception as e:
-        print(e)
-        return None
 
 for tag in tags:
     add_task_db(tag)
-    add_tag_db(tag)

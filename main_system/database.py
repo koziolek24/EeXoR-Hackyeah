@@ -1,5 +1,3 @@
-from csv import excel
-
 from .models import CFUser, CFSubmission, CFProblemAndTag, CFProblem, CFTag
 from django.utils import timezone
 from django.contrib.auth.models import User as AUser
@@ -7,17 +5,17 @@ from django.http import JsonResponse
 from datetime import timedelta
 
 
-def get_problems_by_user_and_tags(cf_user, tags : list[str]) -> list[CFProblem]:
-    user_submissions = CFSubmission.objects.all().filter(user=cf_user)
-    matching_problems = []
-    for submission in user_submissions:
-        problem = submission.problem
-        problem_tag_records = CFProblemAndTag.objects.all().filter(problem=problem)
-        problem_tags = problem_tag_records.values_list('tag', flat=True)
-        common_tags = list(set(tags).intersection(problem_tags))
-        if (len(common_tags) > 0):
-            matching_problems.append(problem)
-    return matching_problems
+# def get_problems_by_user_and_tags(cf_user, tags : list[str]) -> list[CFProblem]:
+#     user_submissions = CFSubmission.objects.all().filter(user=cf_user)
+#     matching_problems = []
+#     for submission in user_submissions:
+#         problem = submission.problem
+#         problem_tag_records = CFProblemAndTag.objects.all().filter(problem=problem)
+#         problem_tags = problem_tag_records.values_list('tag', flat=True)
+#         common_tags = list(set(tags).intersection(problem_tags))
+#         if (len(common_tags) > 0):
+#             matching_problems.append(problem)
+#     return matching_problems
 
 def add_cf_user(handle: str, rank: str, rating: int):
     try:
@@ -111,22 +109,28 @@ def get_problem_with_rating_and_tag(min_rating: int, max_rating, tag: str):
 def get_problem_by_tag(handle: str, tag: str):
     # TODO
     # every task with tag not started by user
-    problems_w_tag = CFProblem.objects.filter(cfproblemandtag__tag=tag)
-    user = CFUser.objects.get(handle=handle)
-    solved_problems = CFSubmission.objects.filter(user=user, verdict=True).values_list('problem', flat=True)
-    unsolved_problems = problems_w_tag.exclude(id__in=solved_problems)
-    unsolved_problems_list = list(unsolved_problems.values('name', 'rating', 'points', 'index'))
-    return unsolved_problems_list
+    try:
+        problems_w_tag = CFProblem.objects.filter(cfproblemandtag__tag=tag)
+        user = CFUser.objects.get(handle=handle)
+        solved_problems = CFSubmission.objects.filter(user=user, verdict=True).values_list('problem', flat=True)
+        unsolved_problems = problems_w_tag.exclude(id__in=solved_problems)
+        unsolved_problems_list = list(unsolved_problems.values('name', 'rating', 'points', 'index'))
+        return unsolved_problems_list
+    except Exception as e:
+        return None
 
 def get_problem_by_rating(handle: str, min_rating: int, max_rating: int):
     # TODO
     # every task between rating not started
-    problems_w_rating = CFProblem.objects.filter(rating__range=(min_rating, max_rating))
-    user = CFUser.objects.get(handle=handle)
-    solved_problems = CFSubmission.objects.filter(user=user, verdict=True).values_list('problem', flat=True)
-    unsolved_problems = problems_w_rating.exclude(id__in=solved_problems)
-    unsolved_problems_list = list(unsolved_problems.values('name', 'rating', 'points', 'index'))
-    return unsolved_problems_list
+    try:
+        problems_w_rating = CFProblem.objects.filter(rating__range=(min_rating, max_rating))
+        user = CFUser.objects.get(handle=handle)
+        solved_problems = CFSubmission.objects.filter(user=user, verdict=True).values_list('problem', flat=True)
+        unsolved_problems = problems_w_rating.exclude(id__in=solved_problems)
+        unsolved_problems_list = list(unsolved_problems.values('name', 'rating', 'points', 'index'))
+        return unsolved_problems_list
+    except Exception as e:
+        return None
 
 def get_tags_to_a_problem(name: str):
     # TODO
@@ -147,6 +151,8 @@ def get_user_rating(handle: str):
         rating = CFUser.objects.get(handle=handle).rating
         return rating
     except Exception as e:
+        print(handle)
+        print("alle")
         print(e)
         return None
 
