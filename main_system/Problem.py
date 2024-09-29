@@ -147,7 +147,7 @@ def calculate_average(values):
     average = sum(values) / len(values)
     return average
 
-def get_random_problem(problems: list[Problem]) -> Problem:
+def find_random_problem(problems: list[Problem]) -> Problem:
     # filtered_problems = filter_problems_by_tag(problems, tag)
     ammount_of_problems = len(problems)
     if ammount_of_problems == 0:
@@ -185,7 +185,6 @@ def get_problem_with_tag(username: int, tags: list[str]) -> dict:
 
 def get_recommended_problem(username: str) -> dict:
     response = get_problem_by_user(username)
-    print(response)
     if len(response) == 0:
         return get_problem_with_tag("cacteyy", ["math"])
     all_problems = list_to_problems(response)
@@ -194,4 +193,9 @@ def get_recommended_problem(username: str) -> dict:
     return get_problem_with_tag(username, tags)
 
 def get_random_problem(username: str) -> dict:
-    pass
+    rating_range = get_rating_range(get_user_rating(username))
+    response = get_problem_by_rating(username, rating_range[0], rating_range[1])
+    print(response)
+    problems = list_to_problems(response)
+    random_problem = find_random_problem(problems)
+    return random_problem.convert_to_dict()
