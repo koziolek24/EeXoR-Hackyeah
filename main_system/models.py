@@ -10,7 +10,7 @@ PARTICIPANT_TYPES = [
 ]
 
 class CFUser(models.Model):
-    handle = models.CharField(max_length=255)
+    handle = models.CharField(max_length=255, unique=False)
     rank = models.CharField(max_length=255)
     rating = models.IntegerField()
 
@@ -21,6 +21,15 @@ class CFProblem(models.Model):
     name = models.CharField(max_length=255)
     points = models.FloatField(null=True, blank=True, default=None)
     rating = models.IntegerField(null=True, blank=True, default=None)
+
+    def to_dict(self):
+        dict = {}
+        dict['problemset_name'] = self.problemset_name
+        dict['index'] = self.index
+        dict['name'] = self.name
+        dict['points'] = self.points
+        dict['rating'] = self.rating
+        return dict
 
 
 class CFProblemAndTag(models.Model):
@@ -35,6 +44,9 @@ class CFSubmission(models.Model):
     verdict  = models.BooleanField(default=False)
     accept_time = models.DateTimeField(null=True, blank=True)
 
+
+class CFTag(models.Model):
+    tag = models.CharField(max_length=255, unique=False)
 
 
 class CFContest(models.Model):
