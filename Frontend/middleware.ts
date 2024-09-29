@@ -1,10 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import {cookies} from "next/headers";
+import { cookies } from "next/headers";
 
-export type SessionData = {
-    userId: string;
-};
 
 export const sessionSettings = {
     cookieName: 'UID',
@@ -24,7 +21,7 @@ export async function middleware(request: NextRequest) {
     let formData;
     try {
         formData = await request.formData();
-    } catch(err) {
+    } catch (e) {
         return NextResponse.redirect(new URL("/", request.url));
     }
 
