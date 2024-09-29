@@ -1,4 +1,4 @@
-from .models import CFUser, CFSubmission, CFProblemAndTag, CFProblem
+from .models import CFUser, CFSubmission, CFProblemAndTag, CFProblem, CFTag
 from django.utils import timezone
 from django.contrib.auth.models import User as AUser
 from django.http import JsonResponse
@@ -52,14 +52,14 @@ def add_problem(problemset_name: str, index: str, name: str, points: int, rating
         print(e)
         return None
 
-# def add_tags(tag: str):
-#     try:
-#         new_tag = CFTag.objects.create(tag=tag)
-#         new_tag.save()
-#         return new_tag
-#     except Exception as e:
-#         print(e)
-#         return None
+def add_tags(tag: str):
+    try:
+        new_tag = CFTag.objects.create(tag=tag)
+        new_tag.save()
+        return new_tag
+    except Exception as e:
+        print(e)
+        return None
 
 def add_submission(name: str, handle: str):
     try:
