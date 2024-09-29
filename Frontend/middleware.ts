@@ -34,9 +34,10 @@ export async function middleware(request: NextRequest) {
             body: formData,
         });
 
-        console.log(res.status, res.json());
-
-        const userId = 1; // select by  login
+        if(!res.ok)
+            return NextResponse.redirect(new URL("/", request.url));
+        const content = await res.json();
+        const userId = content.user_id;
 
         const response = NextResponse.next();
         response.cookies.set(sessionSettings.cookieName, userId.toString())
