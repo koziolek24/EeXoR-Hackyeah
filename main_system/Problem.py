@@ -5,17 +5,16 @@ django.setup()
 
 from random import randint
 import json
-import main_system.database
+from main_system.database import get_problem_by_tag, get_problem_by_rating, get_user_rating
 
 class Problem:
-    def __init__(self, data):
-        self.name = data["name"]
-        self.link = data["link"]
-        self.rating = data["rating"]
-        self.is_solved = data["is_solved"]
-        self.time = data["time"]
-        self.problem_id = data["problem_id"]
-        self.tags = data["tags"]
+    def __init__(self, _name, _rating, _points, _index):
+        self.name = _name
+        self.rating = _rating
+        self.time = 100
+        self.points = _points
+        self.index = _index
+        self.tags = []
 
     def get_name(self) -> str:
         return self.name
@@ -24,37 +23,22 @@ class Problem:
         return self.link
 
     def get_rating(self) -> int:
+        if self.rating is None:
+            return -1
         return self.rating
     
-    def get_link(self) -> str:
-        return self.link
-
     def get_time(self) -> int:
         return self.time
     
     def get_tags(self) -> list[str]:
         return self.tags
     
-    def get_problem_id(self) -> str:
-        return self.problem_id
-    
-    def stringify(self) -> str:
-        output_string = ""
-        output_string += str(self.get_name()) + " "
-        output_string += str(self.get_problem_id()) + " "
-        output_string += str(self.get_rating()) + " "
-        output_string += str(self.get_tags()) + " "
-        return output_string
-    
     def convert_to_dict(self):
         data = {
             "name": self.name,
-            "link": self.link,
             "rating": self.rating,
-            "is_solved": self.is_solved,
-            "time": self.time,
-            "problem_id": self.problem_id,
-            "tags": self.tags
+            "points": self.points,
+            "index": self.index,
         }
         return data
 
@@ -127,7 +111,6 @@ def filter_problems_by_tag(problems: list[Problem], tag: str) -> list[Problem]:
 
     for problem in problems:
         problem_tags = problem.get_tags()
-        print(problem_tags)
         if tag in problem_tags:
             filtered_problems.append(problem)
     
@@ -159,16 +142,24 @@ def get_random_problem(problems: list[Problem]) -> Problem:
     random_number = randint(0, ammount_of_problems-1)
     return problems[random_number]
 
-def Merge(dict1, dict2):
-    return(dict2.update(dict1))
+def get_rating_range(user_rating):
+    user_rating//=100
+    min_rating = max([0, (user_rating - 2)*100])
+    max_rating = (user_rating + 2)*100
+    return [min_rating, max_rating]
+    
 
-def get_problem_by_tag(username: int, tags: list[str]) -> dict:
-    problems = {}
+def get_problem_with_tag(username: int, tags: list[str]) -> dict:
+    all_problems = []
     for tag in tags:
-        response = database.get_problem_by_tag(username, tag)
-        tmp = response.json()
-        problems = Merge(problems, tmp)
-    final_problem = get_random_problem(problems)
+        response = get_problem_by_tag(username, tag)
+        for problem in response:
+            current_problem = Problem(problem["name"], problem["rating"], problem["points"], problem["index"])
+            all_problems.append(current_problem)
+    
+    rating_range = get_rating_range(get_user_rating(username))
+    all_problems = filter_problems_by_rating(all_problems, rating_range[0], rating_range[1])
+    final_problem = get_random_problem(all_problems)
     return final_problem.convert_to_dict()
 
 def get_recommended_problem(username: str) -> dict:
