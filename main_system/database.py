@@ -172,3 +172,13 @@ def get_user_data(handle: str):
         print(e)
         return None
     # TODO pierdolnac tu cos
+
+def get_user_problem_list(handle: str):
+    try:
+        user = CFUser.objects.get(handle=handle)
+        problem_list_solved = list(CFProblem.objects.filter(cfsubmission__user=user, cfsubmission__verdict=True).values_list('name', 'rating', 'points', 'index'))
+        problem_list_started = list(CFProblem.objects.filter(cfsubmission__user=user, cfsubmission__verdict=False).values_list('name', 'rating', 'points', 'index'))
+        return problem_list_started, problem_list_solved
+    except Exception as e:
+        print(e)
+        return None
