@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.scss";
 import ImportBootstrap from "@/app/ui/ImportBootstrap";
+import React from "react";
 
 export const metadata: Metadata = {
   title: "Create Next App",

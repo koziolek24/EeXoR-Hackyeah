@@ -1,6 +1,5 @@
-import {NextApiRequest} from "next";
 
 
-export default function Home(request: NextApiRequest) {
+export default function Home() {
     return <div>Home</div>;
 }
