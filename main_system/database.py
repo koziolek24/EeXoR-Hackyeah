@@ -171,8 +171,8 @@ def get_user_data(handle: str):
 def get_user_problem_list(handle: str):
     try:
         user = CFUser.objects.get(handle=handle)
-        problem_list_solved = list(CFProblem.objects.filter(cfsubmission__user=user, cfsubmission__verdict=True).values_list('name', 'rating', 'points', 'index'))
-        problem_list_started = list(CFProblem.objects.filter(cfsubmission__user=user).values_list('name', 'rating', 'points', 'index'))
+        problem_list_solved = CFProblem.objects.filter(cfsubmission__user=user, cfsubmission__verdict=True)
+        problem_list_started = CFProblem.objects.filter(cfsubmission__user=user)
         return problem_list_started, problem_list_solved
     except Exception as e:
         print(e)
@@ -181,8 +181,8 @@ def get_user_problem_list(handle: str):
 def get_user_problem_list_by_tag(handle: str, tag: str):
     try:
         user = CFUser.objects.get(handle=handle)
-        problem_list_solved = list(CFProblem.objects.filter(cfsubmission__user=user, cfsubmission__verdict=True).values_list('name', 'rating', 'points', 'index'))
-        problem_list_started = list(CFProblem.objects.filter(cfsubmission__user=user).values_list('name', 'rating', 'points', 'index'))
+        problem_list_solved = CFProblem.objects.filter(cfsubmission__user=user, cfsubmission__verdict=True)
+        problem_list_started = CFProblem.objects.filter(cfsubmission__user=user)
         return problem_list_started, problem_list_solved
     except Exception as e:
         print(e)
