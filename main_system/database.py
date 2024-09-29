@@ -87,7 +87,7 @@ def get_problem_by_user(handle: str):
         user = CFUser.objects.get(handle=handle)
         user_problems = CFProblem.objects.filter(cfsubmission__user=user, cfsubmission__verdict=True)
         user_problems_list = list(user_problems.values('name', 'rating', 'points', 'index'))
-        return JsonResponse({'user_problems_list': user_problems_list})
+        return user_problems_list
 
     # TODO
     except Exception as e:
@@ -107,30 +107,22 @@ def get_problem_with_rating_and_tag(min_rating: int, max_rating, tag: str):
 def get_problem_by_tag(handle: str, tag: str):
     # TODO
     # every task with tag not started by user
-    try:
-        problems_w_tag = CFProblem.objects.filter(cfproblemandtag__tag=tag)
-        user = CFUser.objects.get(handle=handle)
-        solved_problems = CFSubmission.objects.filter(user=user, verdict=True).values_list('problem', flat=True)
-        unsolved_problems = problems_w_tag.exclude(id__in=solved_problems)
-        unsolved_problems_list = list(unsolved_problems.values('name', 'rating', 'points', 'index'))
-        return JsonResponse({'unsolved_problems_list': unsolved_problems_list})
-    except Exception as e:
-        print(e)
-        return None
+    problems_w_tag = CFProblem.objects.filter(cfproblemandtag__tag=tag)
+    user = CFUser.objects.get(handle=handle)
+    solved_problems = CFSubmission.objects.filter(user=user, verdict=True).values_list('problem', flat=True)
+    unsolved_problems = problems_w_tag.exclude(id__in=solved_problems)
+    unsolved_problems_list = list(unsolved_problems.values('name', 'rating', 'points', 'index'))
+    return unsolved_problems_list
 
 def get_problem_by_rating(handle: str, min_rating: int, max_rating: int):
     # TODO
     # every task between rating not started
-    try:
-        problems_w_rating = CFProblem.objects.filter(rating__range=(min_rating, max_rating))
-        user = CFUser.objects.get(handle=handle)
-        solved_problems = CFSubmission.objects.filter(user=user, verdict=True).values_list('problem', flat=True)
-        unsolved_problems = problems_w_rating.exclude(id__in=solved_problems)
-        unsolved_problems_list = list(unsolved_problems.values('name', 'rating', 'points', 'index'))
-        return JsonResponse({'unsolved_problems_list': unsolved_problems_list})
-    except Exception as e:
-        print(e)
-        return None
+    problems_w_rating = CFProblem.objects.filter(rating__range=(min_rating, max_rating))
+    user = CFUser.objects.get(handle=handle)
+    solved_problems = CFSubmission.objects.filter(user=user, verdict=True).values_list('problem', flat=True)
+    unsolved_problems = problems_w_rating.exclude(id__in=solved_problems)
+    unsolved_problems_list = list(unsolved_problems.values('name', 'rating', 'points', 'index'))
+    return unsolved_problems_list
 
 def get_tags_to_a_problem(name: str):
     # TODO
@@ -138,7 +130,7 @@ def get_tags_to_a_problem(name: str):
         problem = CFProblem.objects.get(name=name)
         tags = CFProblemAndTag.objects.filter(problem=problem).all()
         tags_list = list(tags.values_list('tag', flat=True))
-        return JsonResponse({'tags_list': tags_list})
+        return tags_list
     except Exception as e:
         print(e)
     pass
