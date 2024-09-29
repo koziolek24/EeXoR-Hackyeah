@@ -28,8 +28,8 @@ class CFSubmissionAdmin(admin.ModelAdmin):
     search_fields = []
     list_filter = []
 
-@admin.register(CFTag)
-class CFTagsAdmin(admin.ModelAdmin):
-    list_display = ['id', 'tag']
-    search_fields = []
-    list_filter = []
+# @admin.register(CFTag)
+# class CFTagsAdmin(admin.ModelAdmin):
+#     list_display = ['id', 'tag']
+#     search_fields = []
+#     list_filter = []

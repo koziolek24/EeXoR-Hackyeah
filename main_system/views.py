@@ -14,6 +14,7 @@ from .auth import (login_user, logout_user,
                    get_csrf_token, get_drf_token, get_auser)
 from rest_framework.decorators import action
 from .database import add_submission
+from .Problem import get_problem_with_tag, get_recommended_problem, get_random_problem
 
 # Informacje zwrotne
 
@@ -172,3 +173,7 @@ class CFProblemAndTagViewSet(viewsets.ModelViewSet):
 class CFSubmissionViewSet(viewsets.ModelViewSet):
     queryset = CFSubmission.objects.all()
     serializer_class = CFSubmissionSerializer
+
+class CFTagViewSet(viewsets.ModelViewSet):
+    queryset = CFTag.objects.all()
+    serializer_class = CFTagSerializer

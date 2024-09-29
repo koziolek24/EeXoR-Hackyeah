@@ -46,4 +46,9 @@ class CFSubmissionSerializer(serializers.ModelSerializer):
         fields = ['id', 'cf_id', 'creation_time', 'problem',
                   'user', 'verdict']
 
+class CFTagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CFTag
+        fields = ['id', 'tag']
+
 
