@@ -6,6 +6,7 @@ django.setup()
 from random import randint
 import json
 from main_system.database import get_problem_by_tag, get_problem_by_rating, get_user_rating, get_problem_by_user, get_tags_to_a_problem
+import tools.fill_db
 
 class Problem:
     def __init__(self, _name, _rating, _points, _index):
@@ -42,10 +43,6 @@ class Problem:
         return self.index
     
     def convert_to_dict(self):
-        print(self.get_name())
-        print(self.get_rating())
-        print(self.get_points())
-        print(self.get_index())
         data = {
             "name": self.get_name(),
             "rating": self.get_rating(),
@@ -92,10 +89,8 @@ def sort_problems_by_tags(problems: list[Problem]) -> list[Problem]:
     for tag in all_tags:
         sorted_problems[tag] = []
 
-    print(problems)
     for problem in problems:
         problem_tags = get_tags_to_a_problem(problem.get_name())
-        print(problem_tags)
         for tag in problem_tags:
             sorted_problems[tag].append(problem)
     
@@ -187,13 +182,25 @@ def get_recommended_problem(username: str) -> dict:
         return get_problem_with_tag("cacteyy", ["math"])
     all_problems = list_to_problems(response)
     tags = get_worst_tags(all_problems)
-    print(tags)
     return get_problem_with_tag(username, tags)
 
 def get_random_problem(username: str) -> dict:
     rating_range = get_rating_range(get_user_rating(username))
     response = get_problem_by_rating(username, rating_range[0], rating_range[1])
-    print(response)
     problems = list_to_problems(response)
     random_problem = find_random_problem(problems)
     return random_problem.convert_to_dict()
+
+def get_unused_tags(username: str) -> list[str]:
+    response = get_problem_by_user(username)
+    problems = list_to_problems(response)
+    all_tags = tools.fill_db.tags
+    for problem in problems:
+        tags = get_tags_from_problems(problem.get_name())
+        for tag in tags:
+            if tag in all_tags:
+                all_tags.remove(tag)
+
+    return all_tags
+
+print(get_unused_tags("cacteyy"))

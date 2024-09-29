@@ -10,7 +10,7 @@ PARTICIPANT_TYPES = [
 ]
 
 class CFUser(models.Model):
-    handle = models.CharField(max_length=255, unique=True)
+    handle = models.CharField(max_length=255, unique=False)
     rank = models.CharField(max_length=255)
     rating = models.IntegerField()
 
@@ -46,7 +46,7 @@ class CFSubmission(models.Model):
 
 
 class CFTag(models.Model):
-    tag = models.CharField(max_length=255, unique=True)
+    tag = models.CharField(max_length=255, unique=False)
 
 
 class CFContest(models.Model):
