@@ -72,3 +72,6 @@ def user_exists(handle):
         return CFUser.objects.all().get(handle=handle) is not None
     except CFUser.DoesNotExist:
         return False
+
+def handle_from_user_id(id : int):
+    return CFUser.objects.all().get(id=id).handle
