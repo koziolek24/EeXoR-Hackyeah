@@ -226,20 +226,15 @@ def get_random_problem(username: str) -> dict:
     random_problem = find_random_problem(problems)
     return random_problem.convert_to_dict()
 
-print(get_problem_by_tag('tourist', 'math'))
-print(get_recommended_problem('tourist'))
-print(get_random_problem('tourist'))
+def get_unused_tags(username: str) -> list[str]:
+     response = get_problem_by_user(username)
+     problems = list_to_problems(response)
+     all_tags = tools.fill_db.tags
+     for problem in problems:
+         tags = get_tags_from_problems(problem.get_name())
+         for tag in tags:
+             if tag in all_tags:
+                 all_tags.remove(tag)
+     return all_tags
 
-#def get_unused_tags(username: str) -> list[str]:
-#     response = get_problem_by_user(username)
-#     problems = list_to_problems(response)
-#     all_tags = tools.fill_db.tags
-#     for problem in problems:
-#         tags = get_tags_from_problems(problem.get_name())
-#         for tag in tags:
-#             if tag in all_tags:
-#                 all_tags.remove(tag)
-
-#     return all_tags
-
-# print(get_unused_tags('test'))
+print(get_unused_tags('cacteyy'))
