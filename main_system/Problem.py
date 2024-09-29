@@ -60,7 +60,6 @@ def calculate_performence(problem: list[Problem]) -> int:
     performence //= problem.getTime()
     return performence
 
-# there for sure are more than 0 problems (checked earlier)
 def evaluate_problems(problems: list[Problem]) -> int:
     performence = 0
     ammount_of_problems = len(problems)
@@ -148,7 +147,6 @@ def calculate_average(values):
     return average
 
 def find_random_problem(problems: list[Problem]) -> Problem:
-    # filtered_problems = filter_problems_by_tag(problems, tag)
     ammount_of_problems = len(problems)
     if ammount_of_problems == 0:
         return None
