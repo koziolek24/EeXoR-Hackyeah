@@ -162,7 +162,20 @@ class CFProblemViewSet(viewsets.ModelViewSet):
         tag = request.query_params['tag']
         started, solved = get_user_problem_list_by_tag(handle, tag)
         return get_json_response_from(solved, 200, iterate=True)
-        
+    
+    @csrf_exempt
+    @action(detail=False, methods=['get'])
+    def find(self, request):
+        handle = handle_from_user_id(int(request.data['user_id']))
+        problem_dict = get_recommended_problem(handle)
+        return JsonResponse(problem_dict)
+
+    @csrf_exempt
+    @action(detail=False, methods=['get'])
+    def rand(self, request):
+        handle = handle_from_user_id(int(request.data['user_id']))
+        problem_dict = get_random_problem(handle)
+        return JsonResponse(problem_dict)
 
 
 class CFProblemAndTagViewSet(viewsets.ModelViewSet):
@@ -177,3 +190,16 @@ class CFSubmissionViewSet(viewsets.ModelViewSet):
 class CFTagViewSet(viewsets.ModelViewSet):
     queryset = CFTag.objects.all()
     serializer_class = CFTagSerializer
+
+    @csrf_exempt
+    @action(detail=True, methods=['get'])
+    def find(self, request, pk=None):
+        try:
+            print(request.query_params)
+            tag = self.get_object()
+            handle = handle_from_user_id(int(request.query_params['user_id']))
+            problem_dict = get_problem_with_tag(handle, [tag.tag])
+            return JsonResponse(problem_dict)
+        except Exception as e:
+            return get_internal_server_error(e)
+        
