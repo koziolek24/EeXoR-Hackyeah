@@ -9,9 +9,11 @@ from .responses import (FrontendMessage, get_ok_response,
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views.decorators.csrf import csrf_exempt
 from .database import add_cf_user
-from .database import user_exists
+from .database import user_exists, handle_from_user_id
 from .auth import (login_user, logout_user,
                    get_csrf_token, get_drf_token, get_auser)
+from rest_framework.decorators import action
+from .database import add_submission
 
 # Informacje zwrotne
 
@@ -120,6 +122,29 @@ class CFUserAndContestViewSet(viewsets.ModelViewSet):
 class CFProblemViewSet(viewsets.ModelViewSet):
     queryset = CFProblem.objects.all()
     serializer_class = CFProblemSerializer
+    authentication_classes = []
+
+    @csrf_exempt
+    @action(detail=True, methods=['post'])
+    def start(self, request, pk=None):
+        problem = self.get_object()
+        handle = handle_from_user_id(int(request.data['user_id']))
+        result = add_submission(problem.name, handle)
+        if result is not None:
+            return get_ok_response('Ok')
+        else:
+            return get_internal_server_error('Operacja się nie powiodła')
+    
+    @csrf_exempt
+    @action(detail=True, methods=['post'])
+    def end(self, request, pk=None):
+        problem = self.get_object()
+        handle = handle_from_user_id(int(request.data['user_id']))
+        result = add_submission(problem.name, handle)
+        if result is None:
+            return get_ok_response('Ok')
+        else:
+            return get_internal_server_error('Operacja się nie powiodła')
 
 
 class CFProblemAndTagViewSet(viewsets.ModelViewSet):

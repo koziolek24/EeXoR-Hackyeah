@@ -141,6 +141,10 @@ def get_tags_to_a_problem(name: str):
         return JsonResponse({'tags_list': tags_list})
     except Exception as e:
         print(e)
+    pass
+
+def handle_from_user_id(id : int):
+    return CFUser.objects.all().get(id=id).handle
         return None
 
 def get_user_rating(handle: str):
