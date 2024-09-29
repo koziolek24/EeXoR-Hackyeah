@@ -50,3 +50,5 @@ print(Problem.get_random_problem_with_tag(hardcoded_problems, 1).stringify())
 print([x.stringify() for x in Problem.filter_problems_by_rating(hardcoded_problems, 1400, 1700)])
 print([x.stringify() for x in hardcoded_problems])
 hardcoded_problems = Problem.sort_problems_by_tags(hardcoded_problems)
+
+print(Problem.get_problem_by_tag("fft"))
