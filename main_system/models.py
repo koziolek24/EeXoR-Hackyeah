@@ -36,6 +36,9 @@ class CFSubmission(models.Model):
     accept_time = models.DateTimeField(null=True, blank=True)
 
 
+class CFTag(models.Model):
+    tag = models.CharField(max_length=255, unique=True)
+
 
 class CFContest(models.Model):
     contest_id = models.IntegerField()
