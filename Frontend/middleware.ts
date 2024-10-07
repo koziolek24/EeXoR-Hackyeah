@@ -8,7 +8,6 @@ export const sessionSettings = {
 };
 
 export async function middleware(request: NextRequest) {
-    return NextResponse.error();
     const cookieStore = cookies();
     if(cookieStore.has(sessionSettings.cookieName))
     {
@@ -49,5 +48,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: [ "/dashboard/:p*", "/"]
+    matcher: [ "/dashboard/:p*"]
 };
