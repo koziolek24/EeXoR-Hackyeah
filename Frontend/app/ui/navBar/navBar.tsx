@@ -1,8 +1,12 @@
-import "@/app/ui/NavBar.scss"
-import Link from "next/link";
+'use client'
+
+import { usePathname } from "next/navigation";
+import "@/app/ui/navBar/navBar.scss"
+import NavBarElement from "@/app/ui/navBar/navBarElement";
 
 
 export default function NavBar() {
+    const activePath = usePathname();
     return <nav className="navbar navbar-expand-md main-nav navbar-dark">
         <div className="container-fluid">
             <button className="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -11,11 +15,13 @@ export default function NavBar() {
                 <span className="navbar-toggler-icon"></span>
             </button>
             <div className="collapse navbar-collapse" id="navbar-extended-content">
+                <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                    <NavBarElement path="/dashboard" name="Stats" activePath={activePath} />
+                    <NavBarElement path="/dashboard/start-new" name="Start New" activePath={activePath} />
+                    <NavBarElement path="/dashboard/solve" name="Solve" activePath={activePath} />
+                </ul>
                 <ul className="navbar-nav">
-                    <li className="navbar-item"><Link className="nav-link" href="/dashboard">stats</Link></li>
-                    <li className="navbar-item"><Link className="nav-link" href="/dashboard/start-new">start new</Link></li>
-                    <li className="navbar-item"><Link className="nav-link" href="/dashboard/solve">solve</Link></li>
-                    <li className="navbar-item"><Link className="nav-link" href="/dashboard/logout">log out</Link></li>
+                    <NavBarElement path="/dashboard/logout" name="Log Out" activePath={activePath} />
                 </ul>
             </div>
         </div>

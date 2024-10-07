@@ -1,52 +1,63 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { cookies } from "next/headers";
+import { login } from "@/app/lib/api/login"
+import { verifyLogin } from "@/app/lib/api/verifyLogin";
+import { logout } from "@/app/lib/api/logout";
 
-
-export const sessionSettings = {
-    cookieName: 'UID',
-};
 
 export async function middleware(request: NextRequest) {
-    const cookieStore = cookies();
-    if(cookieStore.has(sessionSettings.cookieName))
-    {
-        const response = NextResponse.next();
-        if (new URL(request.url).pathname == "/dashboard/logout") {
-            response.cookies.delete(sessionSettings.cookieName);
-        }
-        return response;
+    const path = request.nextUrl.pathname;
+    let response: NextResponse | undefined;
+    if (path === "/login") {
+        response = await middlewareForLogin(request);
+    } else if (path === "/") {
+        response = await middlewareForRoot(request);
+    } else if (path.startsWith("/dashboard")) {
+        response = await middlewareForDashboard(request);
     }
 
+    return response;
+}
+
+async function middlewareForRoot(request: NextRequest) {
+    const cookieStore = cookies();
+    if(verifyLogin(cookieStore)) {
+        return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+}
+
+async function middlewareForDashboard(request: NextRequest) {
+    const cookieStore = cookies();
+    if(!verifyLogin(cookieStore))
+    {
+        return NextResponse.redirect(new URL('/', request.url));
+    }
+
+    if (new URL(request.url).pathname == "/dashboard/logout") {
+        const response = NextResponse.redirect(new URL("/", request.url))
+        logout(response);
+        return response;
+    }
+}
+
+async function middlewareForLogin(request: NextRequest) {
     let formData;
     try {
         formData = await request.formData();
     } catch (e) {
+        console.error(e);
         return NextResponse.redirect(new URL("/", request.url));
     }
 
-    if (new URL(request.url).pathname == "/dashboard" && request.method === "POST" && formData.has("login")) {
-        const login = formData.get("login")?.toString();
-        formData = new FormData();
-        formData.set("handle", login);
-        const res = await fetch(`${process.env.API_URL}/login/`, {
-            method: "POST",
-            body: formData,
-        });
-
-        if(!res.ok)
-            return NextResponse.redirect(new URL("/", request.url));
-        const content = await res.json();
-        const userId = content.user_id;
-
-        const response = NextResponse.next();
-        response.cookies.set(sessionSettings.cookieName, userId.toString())
-        return response;
+    if (request.method !== "POST" || !formData.has("login"))
+    {
+        return NextResponse.redirect(new URL('/', request.url));
     }
 
-    return NextResponse.redirect(new URL('/', request.url));
+    return login(request.url, formData.get("login")?.toString() as unknown as string);
 }
 
 export const config = {
-    matcher: [ "/dashboard/:p*"]
+    matcher: [ "/((?!api|static|.*\\..*|_next).*)" ]
 };
