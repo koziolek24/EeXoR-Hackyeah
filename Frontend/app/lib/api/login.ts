@@ -2,8 +2,7 @@ import {NextResponse} from "next/server";
 import { sessionSettings } from "@/app/lib/sessionSettings";
 
 
-export async function login(path: string, formData: FormData) {
-    const login = formData.get("login")?.toString() as unknown as string;
+export async function login(path: string, login: string) {
     const apiData = new FormData();
     apiData.set("handle", login);
     const res = await fetch(`${process.env.API_URL}/login/`, {

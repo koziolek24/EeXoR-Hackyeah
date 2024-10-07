@@ -32,18 +32,6 @@ async function middlewareForDashboard(request: NextRequest) {
     const cookieStore = cookies();
     if(!verifyLogin(cookieStore))
     {
-        let formData;
-        try {
-            formData = await request.formData();
-        } catch (e) {
-            console.error(e);
-            return NextResponse.redirect(new URL("/", request.url));
-        }
-
-        if (new URL(request.url).pathname == "/dashboard" && request.method === "POST" && formData.has("login")) {
-            return login(request.url, formData);
-        }
-
         return NextResponse.redirect(new URL('/', request.url));
     }
 
@@ -68,7 +56,7 @@ async function middlewareForLogin(request: NextRequest) {
         return NextResponse.redirect(new URL('/', request.url));
     }
 
-    return login(request.url, formData);
+    return login(request.url, formData.get("login")?.toString() as unknown as string);
 }
 
 export const config = {
