@@ -23,7 +23,6 @@ export async function middleware(request: NextRequest) {
 async function middlewareForRoot(request: NextRequest) {
     const cookieStore = cookies();
     if(verifyLogin(cookieStore)) {
-        console.log("XDDD2");
         return NextResponse.redirect(new URL("/dashboard", request.url));
     }
 }
