@@ -4,5 +4,5 @@ import React from "react";
 export default function Layout({ children }: Readonly<{
     children: React.ReactNode;
 }>) {
-    return <><NavBar />{children}</>;
+    return <><NavBar /><div className="container mt-5">{children}</div></>;
 }
