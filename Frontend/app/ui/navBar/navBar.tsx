@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import "@/app/ui/navBar/navBar.scss"
 import NavBarElement from "@/app/ui/navBar/navBarElement";
 import Logo from "@/app/ui/logo";
+import Link from "next/link";
 
 
 export default function NavBar() {
@@ -15,7 +16,7 @@ export default function NavBar() {
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"></span>
             </button>
-            <a className="navbar-brand" href="/dashboard"><Logo /></a>
+            <Link className="navbar-brand" href="/dashboard"><Logo /></Link>
             <div className="collapse navbar-collapse" id="navbar-extended-content">
                 <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                     <NavBarElement path="/dashboard" name="Stats" activePath={activePath}/>
@@ -27,6 +28,5 @@ export default function NavBar() {
                 </ul>
             </div>
         </div>
-    </nav>
-        ;
+    </nav>;
 }
