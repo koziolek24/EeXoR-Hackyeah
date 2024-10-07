@@ -26,7 +26,7 @@ export async function middleware(request: NextRequest) {
     }
 
     if (new URL(request.url).pathname == "/dashboard" && request.method === "POST" && formData.has("login")) {
-        const login = formData.get("login")?.toString();
+        const login = formData.get("login")?.toString() as unknown as string;
         formData = new FormData();
         formData.set("handle", login);
         const res = await fetch(`${process.env.API_URL}/login/`, {
