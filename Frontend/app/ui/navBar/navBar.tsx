@@ -3,9 +3,7 @@
 import { usePathname } from "next/navigation";
 import "@/app/ui/navBar/navBar.scss"
 import NavBarElement from "@/app/ui/navBar/navBarElement";
-import { Patrick_Hand } from 'next/font/google'
-
-const patrickHand = Patrick_Hand({ weight: [ "400" ], subsets: ["latin"]});
+import Logo from "@/app/ui/logo";
 
 
 export default function NavBar() {
@@ -17,7 +15,7 @@ export default function NavBar() {
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"></span>
             </button>
-            <a className="navbar-brand" href="/dashboard">Edu<span className={patrickHand.className} style={{fontSize: "120%"}}>X</span>oR</a>
+            <a className="navbar-brand" href="/dashboard"><Logo /></a>
             <div className="collapse navbar-collapse" id="navbar-extended-content">
                 <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                     <NavBarElement path="/dashboard" name="Stats" activePath={activePath}/>

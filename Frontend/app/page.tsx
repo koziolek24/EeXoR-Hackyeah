@@ -1,6 +1,5 @@
-import { Patrick_Hand } from 'next/font/google'
+import Logo from "@/app/ui/logo";
 
-const patrickHand = Patrick_Hand({ weight: [ "400" ], subsets: ["latin"]});
 
 export default function Home() {
   return    <main className="vh-100">
@@ -10,7 +9,7 @@ export default function Home() {
                       <div className="card bg-dark" style={{borderRadius: '1rem'}}>
                           <div className="card-body px-5 py-2 text-center">
                               <div className="pb-5 mt-4">
-                                  <h1 className="text-white mb-3">Edu<span className={patrickHand.className} style={{fontSize: "110%"}}>X</span>oR</h1>
+                                  <h1 className="text-white mb-3"><Logo /></h1>
                                   <form action="/login" method="POST">
                                       <div className="form-floating mb-3">
                                           <input type="text" name="login" id="login" placeholder="login" className="form-control"/>

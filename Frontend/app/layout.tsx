@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <ImportBootstrap />
-      <body>
+      <body className="d-flex flex-column min-vh-100">
         {children}
       </body>
     </html>
