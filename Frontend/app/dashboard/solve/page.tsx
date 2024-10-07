@@ -1,6 +1,6 @@
 "use server"
 import {cookies} from "next/headers";
-import {sessionSettings} from "@/middleware";
+import {sessionSettings} from "@/app/lib/sessionSettings";
 
 
 export default async function Page() {
