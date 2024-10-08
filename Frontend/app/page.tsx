@@ -1,4 +1,5 @@
 import Logo from "@/app/ui/logo";
+import IncorrectDataPrompt from "@/app/ui/incorrectDataPrompt";
 
 
 export default function Home() {
@@ -22,7 +23,7 @@ export default function Home() {
                                   <p className="small mt-3 mb-0 pb-lg-2">
                                       <a className="text-white-50" href="#">Register</a>
                                   </p>
-                                  <p className="text-danger mb-3">Please enter valid login!</p>
+                                  <IncorrectDataPrompt />
                               </div>
                           </div>
                       </div>

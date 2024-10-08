@@ -1,4 +1,4 @@
-import {NextResponse} from "next/server";
+import { NextResponse } from "next/server";
 import { sessionSettings } from "@/app/lib/sessionSettings";
 
 
@@ -11,7 +11,12 @@ export async function login(path: string, login: string) {
     });
 
     if(!res.ok)
-        return NextResponse.redirect(new URL("/", path));
+    {
+        const response = NextResponse.redirect(new URL("/", path));
+        response.cookies.set(sessionSettings.incorrectDataCookieName, "1");
+        return response;
+    }
+
     const content = await res.json();
     const userId = content.user_id;
 
