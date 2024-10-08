@@ -1,16 +1,18 @@
 import {sessionSettings} from "@/app/lib/sessionSettings";
 
 
-export type LoginResult = {
+export type RegisterResult = {
     status: boolean;
     cookieName: string;
     cookieValue: string;
 }
 
-export async function login(login: string) : Promise<LoginResult> {
+export async function register(login: string) : Promise<RegisterResult> {
     const apiData = new FormData();
     apiData.set("handle", login);
-    const res = await fetch(`${process.env.API_URL}/login/`, {
+    apiData.set("rank", "100");
+    apiData.set("rating", "100")
+    const res = await fetch(`${process.env.API_URL}/register/`, {
         method: "POST",
         body: apiData,
     });
@@ -20,16 +22,13 @@ export async function login(login: string) : Promise<LoginResult> {
         return {
             status: false,
             cookieName: sessionSettings.incorrectDataCookieName,
-            cookieValue: "Please enter valid login!",
+            cookieValue: "Sorry! Login is already in use!",
         };
     }
 
-    const content = await res.json();
-    const userId = content.user_id;
-
     return {
         status: true,
-        cookieName: sessionSettings.cookieName,
-        cookieValue: userId.toString(),
-    };
+        cookieName: "",
+        cookieValue: "",
+    }
 }
