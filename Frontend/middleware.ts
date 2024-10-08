@@ -11,10 +11,14 @@ export async function middleware(request: NextRequest) {
     let response: NextResponse | undefined;
     if (path === "/login") {
         response = await middlewareForLogin(request);
+    } else if (path === "/register") {
+        response = await middlewareForRegister(request);
     } else if (path === "/") {
         response = await middlewareForRoot(request);
     } else if (path.startsWith("/dashboard")) {
         response = await middlewareForDashboard(request);
+    } else {
+        response = NextResponse.next();
     }
 
     return response;
@@ -56,6 +60,28 @@ async function middlewareForLogin(request: NextRequest) {
     }
 
     return login(request.url, formData.get("login")?.toString() as unknown as string);
+}
+
+async function middlewareForRegister(request: NextRequest) {
+    if (request.method !== "POST")
+    {
+        return NextResponse.next();
+    }
+
+    let formData;
+    try {
+        formData = await request.formData();
+    } catch (e) {
+        console.error(e);
+        return NextResponse.next();
+    }
+
+    if (!formData.has("login"))
+    {
+        return NextResponse.next()
+    }
+    // register
+    return NextResponse.error();
 }
 
 export const config = {
