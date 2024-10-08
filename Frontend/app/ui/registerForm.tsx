@@ -16,6 +16,6 @@ export default function RegisterForm() {
         <p className="small mt-3 mb-0 pb-lg-2">
             <Link className="text-white-50" href="/">Log in</Link>
         </p>
-        <IncorrectDataPrompt message="Sorry! Login is alredy in use!" />
+        <IncorrectDataPrompt />
     </>;
 }

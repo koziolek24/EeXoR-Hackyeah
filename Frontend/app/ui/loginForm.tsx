@@ -16,6 +16,6 @@ export default function LoginForm() {
             <p className="small mt-3 mb-0 pb-lg-2">
                 <Link className="text-white-50" href="/register">Register</Link>
             </p>
-            <IncorrectDataPrompt message="Please enter valid login!" />
+            <IncorrectDataPrompt />
     </>;
 }

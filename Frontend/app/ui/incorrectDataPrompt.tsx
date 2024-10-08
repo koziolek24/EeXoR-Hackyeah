@@ -6,15 +6,16 @@ import { sessionSettings } from "@/app/lib/sessionSettings";
 import { useEffect, useState } from "react";
 
 
-export default function IncorrectDataPrompt({message}: {message: string}) {
+export default function IncorrectDataPrompt() {
 
     const [content, setContent] = useState("");
 
     useEffect(() => {
-        if (getCookie(sessionSettings.incorrectDataCookieName) == "1") {
+        const value = getCookie(sessionSettings.incorrectDataCookieName);
+        if (value != null) {
+            setContent(value);
             deleteCookie(sessionSettings.incorrectDataCookieName);
-            setContent(message);
         }
-    }, [message]);
+    }, []);
     return <p className="text-danger mb-3">{content}</p>;
 }
