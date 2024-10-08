@@ -9,19 +9,25 @@ import { register } from "@/app/lib/api/register";
 
 export async function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname;
-    let response: NextResponse | undefined;
-    if (path === "/login") {
-        response = await middlewareForLogin(request);
-    } else if (path === "/register") {
-        response = await middlewareForRegister(request);
-    } else if (path === "/") {
-        response = await middlewareForRoot(request);
-    } else if (path.startsWith("/dashboard")) {
+    let response: NextResponse;
+    if (path.startsWith("/dashboard")) {
         response = await middlewareForDashboard(request);
     } else {
-        response = NextResponse.next();
+        switch (path) {
+            case "/":
+                response = await middlewareForRoot(request);
+                break;
+            case "/login":
+                response = await middlewareForLogin(request);
+                break;
+            case "/register":
+                response = await middlewareForRegister(request);
+                break;
+            default:
+                response = NextResponse.next();
+                break;
+        }
     }
-
     return response;
 }
 
@@ -30,6 +36,7 @@ async function middlewareForRoot(request: NextRequest) {
     if(verifyLogin(cookieStore)) {
         return NextResponse.redirect(new URL("/dashboard", request.url));
     }
+    return NextResponse.next();
 }
 
 async function middlewareForDashboard(request: NextRequest) {
@@ -44,6 +51,8 @@ async function middlewareForDashboard(request: NextRequest) {
         logout(response);
         return response;
     }
+
+    return NextResponse.next();
 }
 
 async function middlewareForLogin(request: NextRequest) {
