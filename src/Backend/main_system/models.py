@@ -24,6 +24,7 @@ class CFProblem(models.Model):
 
     def to_dict(self):
         dict = {}
+        dict['id'] = self.id
         dict['problemset_name'] = self.problemset_name
         dict['index'] = self.index
         dict['name'] = self.name
