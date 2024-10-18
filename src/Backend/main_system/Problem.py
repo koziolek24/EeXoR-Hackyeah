@@ -72,16 +72,9 @@ def evaluate_problems(problems: list[Problem]) -> int:
     return performence
 
 def get_tags_from_problems(problems: list[Problem]) -> list[str]:
-    print('ochuj')
-    print(len(problems))
     all_tags = []
     if problems is not None:
         for problem in problems:
-            print()
-            print()
-            print(type(problem))
-            print()
-            print()
             problem_tags = problem.get_tags()
             for tag in problem_tags:
                 if tag in all_tags:
@@ -94,12 +87,8 @@ def sort_problems_by_difficulty(problems: list[Problem]) -> list[Problem]:
     return sorted(problems, key=lambda x : x.rating)
 
 def sort_problems_by_tags(problems: list[Problem]) -> list[Problem]:
-    print(problems)
     for problem in problems:
-        print('kutasiatko')
-        print(type(problem))
     all_tags = get_tags_from_problems(problems)
-    print('chuju zloty')
     sorted_problems = {}
 
     for tag in all_tags:
@@ -199,26 +188,16 @@ def get_problem_with_tag(username: str, tags: list[str]) -> dict:
     return final_problem
 
 def get_recommended_problem(username: str) -> dict:
-    print(username)
     response = get_problem_by_user(username)
-    print(type(response))
-    print(response)
     if len(response) == 0:
         return get_problem_with_tag(username, ['math'])
-    print(str(response) + 'resp')
     all_problems = list_to_problems(response)
-    print('kuuutas')
-    print(type(all_problems))
     for problem in all_problems:
-        print('kukukutas')
-        print(problem)
-        print(type(problem))
     tags = get_worst_tags(all_problems)
     return get_problem_with_tag(username, tags)
 
 def get_random_problem(username: str) -> dict:
     rating_range = get_rating_range(get_user_rating(username))
-    print("hello world")
     response = get_problem_by_rating(username, rating_range[0], rating_range[1])
     if response is None:
         return None
@@ -236,5 +215,3 @@ def get_unused_tags(username: str) -> list[str]:
              if tag in all_tags:
                  all_tags.remove(tag)
      return all_tags
-
-print(get_unused_tags('cacteyy'))
